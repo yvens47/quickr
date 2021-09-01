@@ -12,7 +12,11 @@ import {
   collection,
   getDocs,
   addDoc,
-  serverTimestamp
+  serverTimestamp,
+  doc,
+  onSnapshot,
+  query,
+  orderBy
 } from "firebase/firestore";
 import {
   GET_USER,
@@ -22,7 +26,11 @@ import {
   SIGN_UP_USER_ERROR,
   SIGN_OUT_USER,
   SIGN_OUT_USER_ERROR,
-  READ_POSTS
+  READ_POSTS,
+  ADD_POST,
+  LIKE_POST,
+  COMMENTS,
+  COMMENT_ON_POST
 } from "./type";
 
 const DB_COLLECTION_POSTS = "Posts";
@@ -122,24 +130,47 @@ export function logOut() {
 export function getPosts(start, limit) {
   return dispatch => {
     const db = getFirestore(app);
-    const querySnapshot = getDocs(collection(db, DB_COLLECTION_POSTS));
-    const data = [];
-    querySnapshot.then(querySnapshot => {
-      querySnapshot.forEach(doc => {
-        //console.log(`${doc.id} => ${doc.data()}`);
-        const document = { ...doc.data(), postId: doc.id };
-        data.push(document);
-      });
-      dispatch({ type: READ_POSTS, payload: data });
-    });
+    const q = query(collection(db, DB_COLLECTION_POSTS));
+    const unsubscribe = onSnapshot(
+      q,
+      querySnapshot => {
+        const data = [];
+        querySnapshot.forEach(doc => {
+          const document = { ...doc.data(), postId: doc.id };
+          data.push(document);
+        });
+        dispatch({ type: READ_POSTS, payload: data });
+      },
+
+      error => {
+        console.log(error);
+      }
+    );
   };
 }
 
-
+//not yet implemented
 export function addPost(post) {
   return dispatch => {
     const db = getFirestore(app);
-    // const docRef = addDoc(collection(db, DB_COLLECTION_POSTS), post);
-    // console.log("Document written with ID: ", docRef.id);
+    const docRef = addDoc(collection(db, DB_COLLECTION_POSTS), post);
+
+    dispatch({
+      type: ADD_POST,
+      message: `Document written with ID:  ${docRef.id}`
+    });
   };
+}
+//not yet implemented
+export function likePost(id) {
+  // update document field base on id;
+  alert("liked");
+  return dispatch => {
+    dispatch({ type: LIKE_POST });
+  };
+}
+export function commentPost(postId) {
+  // update document field base on id;
+  alert("liked");
+  return dispatch => {};
 }

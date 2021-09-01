@@ -16,26 +16,67 @@ import Header from "../header";
 import Footer from "../footer";
 import DialogContent from "./dialogContent";
 import { connect } from "react-redux";
-import { isLoggedIn, getPosts, addPost } from "../../store/actions/index";
+import {
+  isLoggedIn,
+  getPosts,
+  addPost,
+  likePost
+} from "../../store/actions/index";
 import { serverTimestamp } from "firebase/firestore";
 import Sidebar from "./sidebar";
 
 class AppIndexPage extends Component {
   state = {
-    posts: data,
     open: false,
     type: "photo",
-    liked: false
+    liked: false,
+    userPost: {
+      postType: "",
+      video: "",
+      description: "",
+
+      user: {
+        id: "123456",
+        name: "Beeplet",
+        image:
+          "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
+      },
+
+      likes: 50,
+      comments: [{ user: "678", text: "Wowo this is great" }],
+      date: "08-21-2021"
+    }
   };
   componentDidMount = async () => {
     this.props.isLoggedIn();
     this.props.getPosts(0, 10);
+  };
+  handleClickOpen = e => {
+    this.setState({ open: true, type: e.target.getAttribute("data-type") });
+  };
+
+  handleClose = () => {
+    this.setState({ open: false });
+  };
+  handleChange = ({ currentTarget }) => {
+    const postCopy = { ...this.state.userPost };
+    postCopy[currentTarget.name] = currentTarget.value;
+    alert(JSON.stringify(postCopy));
+    this.setState({ userPost: postCopy });
+  };
+
+  like = id => {
+    // user can only like once
+    alert(id);
+    this.props.likePost(id);
+  };
+  post = () => {
     // adding record
     this.props.addPost({
-      postType: "photo",
-      image:
-        "https://images.pexels.com/photos/691114/pexels-photo-691114.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      postType: "video",
+      video:
+        "https://player.vimeo.com/external/592779648.hd.mp4?s=e8f0692d952d2a6ad55cb93a56100c20da492ed0&profile_id=175&oauth2_token_id=57447761",
+      description: "what do you think about this",
       date: "08-22-2021",
       user: {
         id: "123456",
@@ -45,35 +86,19 @@ class AppIndexPage extends Component {
       },
       likes: 90,
       comments: [
-        { user: "678", text: "Wowo this is great", username: "Craig" },
-        { user: "6788", text: "Wowo this is great", username: "Peter" }
+        {
+          user: "678",
+          text: "Wowo this is great",
+          username: "Craig"
+        },
+        {
+          user: "6788",
+          text: "Wowo this is great",
+          username: "Peter"
+        }
       ],
       date: serverTimestamp()
     });
-  };
-  handleClickOpen = e => {
-    this.setState({ open: true, type: e.target.getAttribute("data-type") });
-  };
-
-  handleClose = () => {
-    this.setState({ open: false });
-  };
-
-  like = id => {
-    // user can only like once
-    const post = [...this.state.posts];
-    const fpost = post.filter(post => post.id === id)[0];
-    if (this.state.liked) {
-      // unlike
-      fpost.likes -= 1;
-      this.setState({ liked: false });
-    } else {
-      //find the post by id
-
-      fpost.likes += 1;
-
-      this.setState({ posts: post, liked: true });
-    }
   };
   render() {
     if (!this.props.loggedIn) {
@@ -87,7 +112,12 @@ class AppIndexPage extends Component {
           <div className="row py-5   border-bottom justify-content-center p-2 ">
             <div className="col-md-3">
               {/* Sidebar */}
-              <Sidebar profilePic={'https://images.pexels.com/photos/9226524/pexels-photo-9226524.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940'}/>
+              <Sidebar
+                display={this.props.user && this.props.user.displayName}
+                profilePic={
+                  "https://images.pexels.com/photos/9226524/pexels-photo-9226524.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+                }
+              />
             </div>
             {/* Main content */}
             <div className="col-md-6 app-contents">
@@ -156,7 +186,7 @@ class AppIndexPage extends Component {
               <Posts like={this.like} posts={this.props.posts} />
             </div>
             {/* maain content ends here */}
-            
+
             {/* right side bar */}
             <div className="col-md-3">
               <h2 className="border p-2">Most Followed</h2>
@@ -166,7 +196,11 @@ class AppIndexPage extends Component {
         </div>
 
         <Dialog type={this.state.type}>
-          <DialogContent />
+          <DialogContent
+            change={this.handleChange}
+            post={this.post}
+            userPost={this.state.userPost}
+          />
         </Dialog>
 
         <Footer />
@@ -181,6 +215,9 @@ function mapStateToProps(state) {
     posts: state.posts.posts
   };
 }
-export default connect(mapStateToProps, { isLoggedIn, getPosts, addPost })(
-  AppIndexPage
-);
+export default connect(mapStateToProps, {
+  isLoggedIn,
+  getPosts,
+  addPost,
+  likePost
+})(AppIndexPage);

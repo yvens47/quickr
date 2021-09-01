@@ -5,11 +5,13 @@ import CommentIcon from "@material-ui/icons/Comment";
 import BookmarkIcon from "@material-ui/icons/Bookmark";
 import ShareIcon from "@material-ui/icons/Share";
 import ThumbUpOutlinedIcon from "@material-ui/icons/ThumbUpOutlined";
+import AccessTimeIcon from "@material-ui/icons/AccessTime";
 
 import Comments from "./comments";
 import { Avatar } from "@material-ui/core";
 // import Stack from "@material-ui/core/Stack";
 import { useState } from "react";
+import TimeAgo from "react-timeago";
 
 const Post = ({ post, like }) => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -22,7 +24,7 @@ const Post = ({ post, like }) => {
     setIsPlaying(false);
   };
   return (
-    <div className="py-2" key={post.id}>
+    <div className="py-2" key={post.postId}>
       <div className="card">
         <div className="card-body">
           <div className="post-header d-flex flex-column">
@@ -40,7 +42,9 @@ const Post = ({ post, like }) => {
               <div>
                 <div className="fw-bold">{post.user.name}</div>
 
-                <div>{"post.date"}</div>
+                <div>
+                  <TimeAgo date={post.date} />
+                </div>
               </div>
             </div>
             <div className="py-3">
@@ -79,7 +83,7 @@ const Post = ({ post, like }) => {
           <div className="comments-wrapper-button  d-flex justify-content-between mt-2 pb-2 border-bottom">
             <div class="btn btn-light mt-1  ">
               <IconButton
-                onClick={() => like(post.id)}
+                onClick={() => like(post.postId)}
                 color="secondary"
                 aria-label="upload picture"
                 component="span"

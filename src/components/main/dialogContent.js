@@ -60,6 +60,8 @@ const DialogContent = props => {
           {/*textbox post */}
           <div className="">
             <input
+              name="description"
+              onChange={props.change}
               className="form-control-lg border-0 col-12"
               placeholder="what's on your mind?"
             />
@@ -115,7 +117,7 @@ const DialogContent = props => {
         <div className="col-md-12">
           <div className="mt-1">
             <Button
-              onClick={() => alert("send")}
+              onClick={props.post}
               color="secondary"
               fullWidth={true}
               variant="contained"
