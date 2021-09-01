@@ -14,31 +14,23 @@ function App() {
           <Route
             exact
             path={["/"]}
-            render={routerProps => (
-              <IndexPage isLogin={false} {...routerProps} />
-            )}
+            render={routerProps => <IndexPage {...routerProps} />}
           />
           <Route
             path={["/login", "/signin"]}
-            render={routerProps => <Login isLogin={true} {...routerProps} />}
+            render={routerProps => <Login {...routerProps} />}
           />
           <Route
             path={["/register", "/signup"]}
-            render={routerProps => (
-              <Register isLogin={false} {...routerProps} />
-            )}
+            render={routerProps => <Register {...routerProps} />}
           />
           <Route
             path={["/home", "/app"]}
-            render={routerProps => (
-              <AppIndexPage isLogin={true} {...routerProps} />
-            )}
+            render={routerProps => <AppIndexPage {...routerProps} />}
           />
           <Route
             path={["/profile"]}
-            render={routerProps => (
-              <UserProfile isLogin={true} {...routerProps} />
-            )}
+            render={routerProps => <UserProfile {...routerProps} />}
           />
         </Switch>
       </Router>

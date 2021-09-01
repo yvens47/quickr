@@ -9,8 +9,18 @@ import ThumbUpOutlinedIcon from "@material-ui/icons/ThumbUpOutlined";
 import Comments from "./comments";
 import { Avatar } from "@material-ui/core";
 // import Stack from "@material-ui/core/Stack";
+import { useState } from "react";
 
-const Post = ({ post }) => {
+const Post = ({ post, like }) => {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const handlePlay = e => {
+    e.currentTarget.play();
+    setIsPlaying(true);
+  };
+  const handleStop = e => {
+    e.currentTarget.pause();
+    setIsPlaying(false);
+  };
   return (
     <div className="py-2" key={post.id}>
       <div className="card">
@@ -28,9 +38,9 @@ const Post = ({ post }) => {
               </div>
 
               <div>
-                <p>{post.user.name}</p>
+                <div className="fw-bold">{post.user.name}</div>
 
-                <p>{post.date}</p>
+                <div>{"post.date"}</div>
               </div>
             </div>
             <div className="py-3">
@@ -39,7 +49,14 @@ const Post = ({ post }) => {
           </div>
 
           {post.postType === "video" && (
-            <video controls width="100%">
+            <video
+              controls
+              muted
+              onMouseLeave={handleStop}
+              onMouseEnter={handlePlay}
+              preload="metadata"
+              width="100%"
+            >
               <source src={post.video} type="video/webm" />
               Sorry, your browser doesn't support embedded videos.
             </video>
@@ -62,6 +79,7 @@ const Post = ({ post }) => {
           <div className="comments-wrapper-button  d-flex justify-content-between mt-2 pb-2 border-bottom">
             <div class="btn btn-light mt-1  ">
               <IconButton
+                onClick={() => like(post.id)}
                 color="secondary"
                 aria-label="upload picture"
                 component="span"

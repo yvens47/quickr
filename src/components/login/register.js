@@ -1,7 +1,10 @@
-import { Fragment, useState } from "react";
+import { Fragment, useState, useEffect } from "react";
 import Header from "../header";
 import Footer from "../footer";
-import { Link, Redirect } from "react-router-dom";
+import { Redirect } from "react-router-dom";
+
+import { connect } from "react-redux";
+import { signUp, isLoggedIn } from "../../store/actions/index";
 const Register = props => {
   // states
   const [account, setAccount] = useState({
@@ -9,6 +12,12 @@ const Register = props => {
     username: "",
     password: ""
   });
+  useEffect(() => {
+    props.isLoggedIn();
+  }, []);
+
+  // redirect if login no need to register
+  if (props.isLoggedIn) return <Redirect to="/home" />;
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -21,14 +30,10 @@ const Register = props => {
 
     setAccount(accountCopy);
   };
-  if (props.isLogin) {
-    // redirect with flash message
-    return <Redirect to="/home" />;
-  }
 
   return (
     <Fragment>
-      <Header />
+      <Header loggedIn={props.loggedIn} />
       <div className="container-fluid" style={{ minHeight: "75vh" }}>
         <div className="row py-5">
           <div className="container">
@@ -96,4 +101,9 @@ const Register = props => {
   );
 };
 
-export default Register;
+function mapStateToProps(state) {
+  return {
+    loggedIn: state.user.loggedIn
+  };
+}
+export default connect(mapStateToProps, { signUp, isLoggedIn })(Register);

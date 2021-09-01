@@ -1,12 +1,10 @@
 import { Fragment } from "react";
 
 import Post from "./post";
-const Posts = ({ posts }) => {
+const Posts = ({ posts, like }) => {
   return (
     <Fragment>
-      {posts.map(post => (
-        <Post post={post} />
-      ))}
+      {posts && posts.map(post => <Post like={like} post={post} />)}
     </Fragment>
   );
 };

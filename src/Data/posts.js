@@ -1,6 +1,6 @@
 export const data = [
   {
-    id: "12345643",
+    id: "123437",
     postType: "video",
     video:
       "https://player.vimeo.com/external/442317687.sd.mp4?s=612d4db318c33ac102858410c2d38f1219336c74&profile_id=165&oauth2_token_id=57447761",
@@ -18,7 +18,6 @@ export const data = [
     date: "08-21-2021"
   },
   {
-    id: "12345643",
     postType: "photo",
     image:
       "https://images.pexels.com/photos/691114/pexels-photo-691114.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",

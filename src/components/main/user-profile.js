@@ -89,8 +89,9 @@ const UserProfile = () => {
               </TabPanel>
               <TabPanel value={value} index={1}>
                 <div className="profile-friends">
+                  <h1 className="display-3">Your Friends</h1>
                   <div className="friends-list">
-                    <ul className="list-group">
+                    <ul className="list-group border-none">
                       {user.friends.map(friend => (
                         <li className="list-group-item d-flex justify-content-start align-items-center mb-2 mr-1">
                           <img
@@ -126,7 +127,7 @@ const UserProfile = () => {
               </TabPanel>
               <TabPanel value={value} index={2}>
                 <div>
-                  <h1>Your Account Settings</h1>
+                  <h1 className="display-3">Your Account Settings</h1>
                 </div>
               </TabPanel>
             </Box>

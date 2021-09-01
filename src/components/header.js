@@ -1,11 +1,17 @@
 import { Link } from "react-router-dom";
+
+import { useEffect } from "react";
 const Header = props => {
+  const logout = e => {
+    e.preventDefault();
+    alert("Signout not yet implemented");
+  };
   return (
     <nav
       // style={{ backgroundColor: "#424152" }}
-      class="navbar navbar-expand-lg navbar-light bg-light"
+      class={`navbar navbar-expand-lg navbar-light bg-light `}
     >
-      <div className="container">
+      <div className="container-fluid">
         <Link class="navbar-brand fw-bold " to="/" style={{ color: "#9c27b0" }}>
           Quickr
         </Link>
@@ -36,7 +42,7 @@ const Header = props => {
               aria-label="Search"
             />
           </form>
-          {props.isLogin ? (
+          {props.loggedIn ? (
             <div className="dropdown text-end">
               <Link
                 href="#"
@@ -76,7 +82,7 @@ const Header = props => {
                   <hr className="dropdown-divider" />
                 </li>
                 <li>
-                  <Link className="dropdown-item" to="#">
+                  <Link className="dropdown-item" to="#" onClick={logout}>
                     Sign out
                   </Link>
                 </li>

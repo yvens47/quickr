@@ -87,3 +87,12 @@
   cursor: pointer;
   background: #efefef;
 }
+/* appindex */
+.sidebar-profile .profile {
+  z-index: 1;
+  height: 190px;
+  width: 100%;
+}
+.profile .edit-icon {
+  z-index: 2;
+}

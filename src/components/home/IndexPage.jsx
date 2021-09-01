@@ -1,4 +1,4 @@
-import { Component, Fragment } from "react";
+import { Fragment, useEffect } from "react";
 import Header from "../header";
 import Footer from "../footer";
 import "./home.css";
@@ -7,14 +7,18 @@ import morning from "../../images/undraw_Selfie_re_h9um.svg";
 import session from "../../images/undraw_photo_session_clqr.svg";
 import documents from "../../images/undraw_My_documents_re_13dc.svg";
 import Cols from "../col-md";
+import { connect } from "react-redux";
 import { Link, Redirect } from "react-router-dom";
-
+import { isLoggedIn } from "../../store/actions/index";
 function IndexPage(props) {
-  if (props.isLogin) return <Redirect to="/home" />;
+  useEffect(() => {
+    props.isLoggedIn();
+  }, []);
+  if (props.isLoggedIn) return <Redirect to="/home" />;
 
   return (
     <Fragment>
-      <Header isLogin={props.isLogin} />
+      <Header loggedIn={props.loggedIn} />
       <div className="container-fluid">
         <div className="row p-0 banner  border-bottom justify-content-center p-5 ">
           <div className="container">
@@ -22,8 +26,9 @@ function IndexPage(props) {
               <div className="col-md-6">
                 <h1
                   style={{ color: "rgb(66 65 82)" }}
-                  className="display-2 fw-bold border-bottom"
+                  className="display-3 fw-bold border-bottom"
                 >
+                  {" "}
                   Hello world
                 </h1>
                 <p className="small">
@@ -87,4 +92,9 @@ function IndexPage(props) {
   );
 }
 
-export default IndexPage;
+function mapStateToProps(state) {
+  return {
+    loggedIn: state.user.loggedIn
+  };
+}
+export default connect(mapStateToProps, { isLoggedIn })(IndexPage);
