@@ -76,6 +76,8 @@ const UserProfile = () => {
                   <Tab label="Photos" {...a11yProps(0)} />
                   <Tab label="Friends" {...a11yProps(1)} />
                   <Tab label="Settings" {...a11yProps(2)} />
+                  <Tab label="Bookmarks" {...a11yProps(3)} />
+                  <Tab label="Posts" {...a11yProps(4)} />
                 </Tabs>
               </Box>
               <TabPanel value={value} index={0}>
@@ -128,6 +130,17 @@ const UserProfile = () => {
               <TabPanel value={value} index={2}>
                 <div>
                   <h1 className="display-3">Your Account Settings</h1>
+                </div>
+              </TabPanel>
+
+              <TabPanel value={value} index={3}>
+                <div>
+                  <h1 className="display-3">Your book marks</h1>
+                </div>
+              </TabPanel>
+              <TabPanel value={value} index={4}>
+                <div>
+                  <h1 className="display-3">My Posts</h1>
                 </div>
               </TabPanel>
             </Box>

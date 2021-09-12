@@ -1,4 +1,4 @@
-import { Component, Fragment } from "react";
+import { Component, Fragment, createRef } from "react";
 import { Redirect } from "react-router-dom";
 
 import "./main.css";
@@ -20,7 +20,8 @@ import {
   isLoggedIn,
   getPosts,
   addPost,
-  likePost
+  likePost,
+  addComment
 } from "../../store/actions/index";
 import { serverTimestamp } from "firebase/firestore";
 import Sidebar from "./sidebar";
@@ -28,31 +29,44 @@ import Sidebar from "./sidebar";
 class AppIndexPage extends Component {
   state = {
     open: false,
-    type: "photo",
-    liked: false,
+    type: "",
+    // liked: false,
     userPost: {
+      file: null,
       postType: "",
       video: "",
-      description: "",
+      videos: [],
+      image: "",
+      photos: [],
 
+      description: "",
       user: {
-        id: "123456",
-        name: "Beeplet",
-        image:
-          "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
+        id: "",
+        name: "",
+        image: "",
+        email: ""
       },
 
-      likes: 50,
-      comments: [{ user: "678", text: "Wowo this is great" }],
-      date: "08-21-2021"
-    }
+      likes: [],
+      comments: [],
+      date: serverTimestamp()
+    },
+    upload: [],
+    selectedFile: false
   };
+  constructor(props) {
+    super(props);
+    this.myref = createRef();
+  }
   componentDidMount = async () => {
     this.props.isLoggedIn();
     this.props.getPosts(0, 10);
   };
   handleClickOpen = e => {
-    this.setState({ open: true, type: e.target.getAttribute("data-type") });
+    this.setState({
+      open: true,
+      type: e.target.getAttribute("data-type")
+    });
   };
 
   handleClose = () => {
@@ -61,44 +75,45 @@ class AppIndexPage extends Component {
   handleChange = ({ currentTarget }) => {
     const postCopy = { ...this.state.userPost };
     postCopy[currentTarget.name] = currentTarget.value;
-    alert(JSON.stringify(postCopy));
+
     this.setState({ userPost: postCopy });
+    const srcs = [...this.state.upload];
+
+    if (currentTarget.files !== null) {
+      srcs.push(currentTarget.files);
+      this.setState({ upload: srcs[0] });
+    }
   };
 
   like = id => {
     // user can only like once
-    alert(id);
-    this.props.likePost(id);
+    const { displayName, email, photoURL, uid } = this.props.user;
+    const user = { displayName, email, photoURL, uid };
+    this.props.likePost(id, user);
+  };
+  comment = e => {
+    e.preventDefault();
+    // add to db
+    this.props.addComment(e.currentTarget.getAttribute("data-id"));
   };
   post = () => {
-    // adding record
-    this.props.addPost({
-      postType: "video",
-      video:
-        "https://player.vimeo.com/external/592779648.hd.mp4?s=e8f0692d952d2a6ad55cb93a56100c20da492ed0&profile_id=175&oauth2_token_id=57447761",
-      description: "what do you think about this",
-      date: "08-22-2021",
-      user: {
-        id: "123456",
-        name: "Beeplet",
-        image:
-          "https://www.atlassian.com/dam/jcr:ba03a215-2f45-40f5-8540-b2015223c918/Max-R_Headshot%20(1).jpg"
-      },
-      likes: 90,
-      comments: [
-        {
-          user: "678",
-          text: "Wowo this is great",
-          username: "Craig"
-        },
-        {
-          user: "6788",
-          text: "Wowo this is great",
-          username: "Peter"
-        }
-      ],
-      date: serverTimestamp()
-    });
+    const user = {
+      id: this.props.user.uid,
+      name: this.props.user.displayName,
+      image: this.props.user.photoURL,
+      email: this.props.user.email
+    };
+    // post
+    const postCopy = { ...this.state.userPost, user: user };
+
+    this.props.addPost(postCopy, this.state.type, this.state.upload);
+  };
+  handlePostOption = e => {
+    const postCopy = {
+      ...this.state.userPost,
+      postType: e.currentTarget.getAttribute("data-option")
+    };
+    this.setState({ userPost: postCopy });
   };
   render() {
     if (!this.props.loggedIn) {
@@ -111,7 +126,6 @@ class AppIndexPage extends Component {
         <div className="container-fluid">
           <div className="row py-5   border-bottom justify-content-center p-2 ">
             <div className="col-md-3">
-              {/* Sidebar */}
               <Sidebar
                 display={this.props.user && this.props.user.displayName}
                 profilePic={
@@ -134,6 +148,11 @@ class AppIndexPage extends Component {
                   </span>
                   <span className="flex-grow-1 ml-2">
                     <input
+                      onFocus={this.handleClickOpen}
+                      data-type="post"
+                      data-bs-toggle="modal"
+                      data-bs-target="#exampleModal"
+                      onClick={this.handleClickOpen}
                       className="form-control-lg border-0"
                       placeholder="what's on your mind?"
                     />
@@ -142,7 +161,7 @@ class AppIndexPage extends Component {
                 <div className="post-media border-top">
                   <div className="post-media-items d-flex justify-content-between">
                     <Button
-                      data-type="Video"
+                      data-type="video"
                       data-bs-toggle="modal"
                       data-bs-target="#exampleModal"
                       onClick={this.handleClickOpen}
@@ -157,7 +176,7 @@ class AppIndexPage extends Component {
                       Video
                     </Button>
                     <Button
-                      data-type="Photo"
+                      data-type="photo"
                       data-bs-toggle="modal"
                       data-bs-target="#exampleModal"
                       onClick={this.handleClickOpen}
@@ -183,7 +202,11 @@ class AppIndexPage extends Component {
                   </div>
                 </div>
               </div>
-              <Posts like={this.like} posts={this.props.posts} />
+              <Posts
+                comment={this.comment}
+                like={this.like}
+                posts={this.props.posts}
+              />
             </div>
             {/* maain content ends here */}
 
@@ -197,9 +220,14 @@ class AppIndexPage extends Component {
 
         <Dialog type={this.state.type}>
           <DialogContent
+            type={this.state.type}
+            handlePostOption={this.handlePostOption}
             change={this.handleChange}
             post={this.post}
             userPost={this.state.userPost}
+            selectedFile={this.state.selectedFile}
+            upload={this.state.upload}
+            user={this.props.user}
           />
         </Dialog>
 
@@ -219,5 +247,6 @@ export default connect(mapStateToProps, {
   isLoggedIn,
   getPosts,
   addPost,
-  likePost
+  likePost,
+  addComment
 })(AppIndexPage);

@@ -1,4 +1,5 @@
 import { app } from "../../utils/firebase";
+import firebase from "firebase/app";
 import {
   GoogleAuthProvider,
   getAuth,
@@ -14,10 +15,16 @@ import {
   addDoc,
   serverTimestamp,
   doc,
+  setDoc,
+  updateDoc,
   onSnapshot,
   query,
-  orderBy
+  orderBy,
+  FieldValue,
+  arrayUnion,
+  arrayRemove
 } from "firebase/firestore";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import {
   GET_USER,
   IS_LOGIN,
@@ -130,13 +137,30 @@ export function logOut() {
 export function getPosts(start, limit) {
   return dispatch => {
     const db = getFirestore(app);
-    const q = query(collection(db, DB_COLLECTION_POSTS));
+    const q = query(
+      collection(db, DB_COLLECTION_POSTS),
+      orderBy("date", "desc")
+    );
     const unsubscribe = onSnapshot(
       q,
       querySnapshot => {
         const data = [];
+        const changes = querySnapshot.docChanges();
+        changes.forEach(change => {
+          if (change.type === "modified") {
+            console.log(change);
+            //alert("modified");
+          }
+          if (change.type === "added" && change.oldIndex >= 0) {
+            // send notifications to users[friends]
+            //alert("new post hasbeen added");
+          }
+        });
         querySnapshot.forEach(doc => {
           const document = { ...doc.data(), postId: doc.id };
+
+          document.date = doc.data().date.toDate();
+
           data.push(document);
         });
         dispatch({ type: READ_POSTS, payload: data });
@@ -150,27 +174,99 @@ export function getPosts(start, limit) {
 }
 
 //not yet implemented
-export function addPost(post) {
-  return dispatch => {
+export function addPost(post, postType, file) {
+  return async dispatch => {
     const db = getFirestore(app);
-    const docRef = addDoc(collection(db, DB_COLLECTION_POSTS), post);
+    //const postBucket = "postImages";
+    const storage = getStorage(app);
+    post.postType = postType;
+    //delete fake file property
+    delete post.file;
+    if (postType === "photo") {
+      for (var i = 0; i < file.length; i++) {
+        const photo = file.item(i);
+        const storageRef = ref(storage, `postImages/${photo.name}`);
+        const upload = await uploadBytes(storageRef, photo, photo);
+        const url = await getDownloadURL(ref(storage, storageRef));
+        post.photos.push(url);
+        post.image = post.photos[0];
+      }
 
-    dispatch({
-      type: ADD_POST,
-      message: `Document written with ID:  ${docRef.id}`
-    });
+      const docRef = addDoc(
+        collection(db, DB_COLLECTION_POSTS),
+        post,
+        result => {
+          console.log(result);
+        }
+      );
+
+      dispatch({
+        type: ADD_POST,
+        message: `Document written with ID:  ${docRef.id}`
+      });
+    } else if (postType === "video") {
+      for (var i = 0; i < file.length; i++) {
+        const photo = file.item(i);
+        const storageRef = ref(storage, `postVideos/${photo.name}`);
+        const upload = await uploadBytes(storageRef, photo, photo);
+        const url = await getDownloadURL(ref(storage, storageRef));
+        post.videos.push(url);
+       
+        post.type = photo.type;
+      }
+      post.video = post.videos[0];
+
+      const docRef = addDoc(
+        collection(db, DB_COLLECTION_POSTS),
+        post,
+        result => {
+          console.log(result);
+        }
+      );
+
+      dispatch({
+        type: ADD_POST,
+        message: `Document written with ID:  ${docRef.id}`
+      });
+    } else {
+      //its apost
+    }
   };
 }
 //not yet implemented
-export function likePost(id) {
+export function likePost(id, user) {
   // update document field base on id;
-  alert("liked");
   return dispatch => {
+    const db = getFirestore(app);
+    const docRef = doc(db, DB_COLLECTION_POSTS, id);
+
+    //check if user already like the post if so dislike
+    /*********** dislike the post */
+
+    // if not likes the post
+    updateDoc(docRef, { likes: arrayUnion(user) }, d => {
+      console.log("successfully updated");
+    });
+    /***********like the post */
+
     dispatch({ type: LIKE_POST });
   };
 }
-export function commentPost(postId) {
-  // update document field base on id;
-  alert("liked");
-  return dispatch => {};
+/*
+add comment base on post id.
+user can only post one comment.
+*/
+
+export function addComment(postId, comment) {
+  return dispatch => {
+    const db = getFirestore(app);
+    const docRef = doc(db, DB_COLLECTION_POSTS, postId);
+    // if not likes the post
+    updateDoc(docRef, { comments: arrayUnion(comment) }, d => {
+      console.log("successfully updated");
+      console.log(d);
+    });
+    /***********like the post */
+    dispatch({ type: LIKE_POST });
+  };
 }

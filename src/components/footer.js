@@ -1,3 +1,5 @@
+import FacebookIcon from "@material-ui/icons/Facebook";
+import TwitterIcon from "@material-ui/icons/Twitter";
 const Footer = () => {
   return (
     <div className="container-fluid">
@@ -15,12 +17,12 @@ const Footer = () => {
         <ul className="nav col-md-4 justify-content-end list-unstyled d-flex">
           <li className="ms-3">
             <a className="text-muted" href="/login">
-              Login
+              <FacebookIcon />
             </a>
           </li>
           <li className="ms-3">
             <a className="text-muted" href="/settings">
-              Settings
+              <TwitterIcon />
             </a>
           </li>
           <li className="ms-3">

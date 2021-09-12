@@ -5,16 +5,28 @@ import CommentIcon from "@material-ui/icons/Comment";
 import BookmarkIcon from "@material-ui/icons/Bookmark";
 import ShareIcon from "@material-ui/icons/Share";
 import ThumbUpOutlinedIcon from "@material-ui/icons/ThumbUpOutlined";
+import VideoCameraBackIcon from "@material-ui/icons/VideoCameraBack";
+import AddAPhotoIcon from "@material-ui/icons/AddAPhoto";
+import MoodIcon from "@material-ui/icons/Mood";
 import AccessTimeIcon from "@material-ui/icons/AccessTime";
-
 import Comments from "./comments";
-import { Avatar } from "@material-ui/core";
+import { Avatar, Badge, TextField } from "@material-ui/core";
 // import Stack from "@material-ui/core/Stack";
 import { useState } from "react";
 import TimeAgo from "react-timeago";
-
-const Post = ({ post, like }) => {
+import { Skeleton } from "@material-ui/core";
+import { Link } from "react-router-dom";
+import UserHeaderInfo from "./user-header";
+import Lightbox from "react-image-lightbox";
+import "react-image-lightbox/style.css";
+const Post = ({ post, like, comment }) => {
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isCommentHide, setIsCommentHide] = useState(true);
+  const [lightBoxOpen, setLightBoxOpen] = useState(false);
+  const [photoIndex, setPhotoIndex] = useState(0);
+  const handleOpenLightBox = () => {
+    setLightBoxOpen(true);
+  };
   const handlePlay = e => {
     e.currentTarget.play();
     setIsPlaying(true);
@@ -23,6 +35,15 @@ const Post = ({ post, like }) => {
     e.currentTarget.pause();
     setIsPlaying(false);
   };
+  const showComment = e => {
+    e.preventDefault();
+    if (isCommentHide) {
+      setIsCommentHide(false);
+    } else {
+      setIsCommentHide(true);
+    }
+  };
+
   return (
     <div className="py-2" key={post.postId}>
       <div className="card">
@@ -52,36 +73,69 @@ const Post = ({ post, like }) => {
             </div>
           </div>
 
-          {post.postType === "video" && (
-            <video
-              controls
-              muted
-              onMouseLeave={handleStop}
-              onMouseEnter={handlePlay}
-              preload="metadata"
-              width="100%"
-            >
-              <source src={post.video} type="video/webm" />
-              Sorry, your browser doesn't support embedded videos.
-            </video>
+          {post ? (
+            post.postType === "video" && (
+              <video
+                controls
+                muted
+                onMouseLeave={handleStop}
+                onMouseEnter={handlePlay}
+                preload="metadata"
+                width="100%"
+              >
+                <source src={post.videos} type="video/mp4" />
+                <source src={post.videos} type="video/webm" />
+                Sorry, your browser doesn't support embedded videos.
+              </video>
+            )
+          ) : (
+            <Skeleton variant="rectangular" width={"100%"} height={250} />
           )}
+
           {post.postType === "photo" && (
             <div
               className="post-photo-wrapper"
               style={{ position: "relative" }}
             >
-              <div className="post-photo" style={{}}>
-                <img
-                  src={post.image}
-                  alt={post.description}
-                  style={{ width: "100%" }}
-                />
+              <div className="post-photo d-flex" style={{}}>
+                {post.photos.map(photo => (
+                  <img
+                    key={post.description}
+                    className="flex-shrink-1 p-1 m-1"
+                    src={photo}
+                    alt={post.description}
+                    style={{ width: "100%", cursor: "pointer" }}
+                    onClick={handleOpenLightBox}
+                  />
+                ))}
               </div>
+              {/* Light box */}
+              {lightBoxOpen && (
+                <Lightbox
+                  enableZoom={false}
+                  mainSrc={post.photos[photoIndex]}
+                  nextSrc={post.photos[(photoIndex + 1) % post.photos.length]}
+                  prevSrc={
+                    post.photos[
+                      (photoIndex + post.photos.length - 1) % post.photos.length
+                    ]
+                  }
+                  onCloseRequest={() => setLightBoxOpen(false)}
+                  onMovePrevRequest={() =>
+                    setPhotoIndex(
+                      (photoIndex + post.photos.length - 1) % post.photos.length
+                    )
+                  }
+                  onMoveNextRequest={() =>
+                    setPhotoIndex((photoIndex + 1) % post.photos.length)
+                  }
+                />
+              )}
             </div>
           )}
 
           <div className="comments-wrapper-button  d-flex justify-content-between mt-2 pb-2 border-bottom">
-            <div class="btn btn-light mt-1  ">
+            <div class="btn    ">
               <IconButton
                 onClick={() => like(post.postId)}
                 color="secondary"
@@ -90,23 +144,31 @@ const Post = ({ post, like }) => {
               >
                 <ThumbUpOutlinedIcon />
               </IconButton>
-              {post.likes}
+              {post.likes.length > 1
+                ? `${post.likes.length} likes`
+                : `${post.likes.length} like`}
+              {/* {post.likes.length} */}
             </div>
             <div>
-              <div class=" btn btn-light mt-1   rounded-0   ">
+              <div class=" btn     rounded-0   ">
                 <IconButton
                   color="primary"
                   aria-label="upload picture"
                   component="span"
+                  data-type={post.postId}
+                  onClick={showComment}
                 >
                   <CommentIcon />
                 </IconButton>
-                {post.comments.length}
+                {post.likes.length > 1
+                  ? `${post.comments.length} comment`
+                  : `${post.comments.length} comments`}
+                {/* {post.comments.length} */}
               </div>
 
-              <div class=" btn btn-light mt-1   rounded-0   ">
+              <div class=" btn     rounded-0   ">
                 <IconButton
-                  color="primary"
+                  color="secondary"
                   aria-label="upload picture"
                   component="span"
                 >
@@ -114,7 +176,7 @@ const Post = ({ post, like }) => {
                 </IconButton>
               </div>
 
-              <div class=" btn btn-light mt-1   rounded-0    ">
+              <div class=" btn     rounded-0    ">
                 <IconButton
                   color="primary"
                   aria-label="upload picture"
@@ -126,10 +188,14 @@ const Post = ({ post, like }) => {
             </div>
           </div>
 
-          <div className="comments py-2">
+          <div
+            style={{ display: isCommentHide ? "none" : "block" }}
+            className="comments py-2"
+          >
             <div className="comments-info d-flex justify-content-between">
               <div></div>
               <div>
+                {/* comments filtering */}
                 <div className="dropdown">
                   <a
                     className="btn btn-link link-dark dropdown-toggle"
@@ -163,11 +229,28 @@ const Post = ({ post, like }) => {
                     </li>
                   </ul>
                 </div>
+                {/* comments filtering */}
               </div>
             </div>
+
+            <div className="post-media-items d-flex justify-content-between mt-3">
+              <div>
+                <UserHeaderInfo name={"Jp"} />
+              </div>
+              <div className="flex-grow-1">
+                {/* comments form */}
+                <form data-id={post.postId} onSubmit={comment}>
+                  <TextField
+                    placeholder="add your comment"
+                    fullWidth={true}
+                    multiLine={true}
+                  />
+                </form>
+                {/* comments form ends here */}
+              </div>
+            </div>
+            {/* display all comments */}
             <Comments comments={post.comments} />
-            {/* {post.comments.map(comment => (
-           ))} */}
           </div>
         </div>
         {/* <div className="card-footer text-muted">2 days ago</div> */}

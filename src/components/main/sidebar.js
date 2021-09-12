@@ -3,6 +3,7 @@ import EditIcon from "@material-ui/icons/Edit";
 import HomeIcon from "@material-ui/icons/Home";
 import DashboardIcon from "@material-ui/icons/Dashboard";
 import ImportContactsIcon from "@material-ui/icons/ImportContacts";
+import BookmarksIcon from "@material-ui/icons/Bookmarks";
 import { Link } from "react-router-dom";
 const Sidebar = props => {
   return (
@@ -36,28 +37,34 @@ const Sidebar = props => {
         <ul class="nav nav-pills flex-column mb-auto">
           <li class="nav-item">
             <a href="#" class="nav-link active" aria-current="page">
-              <HomeIcon />
+              <HomeIcon fontSize="large" className={"mr-1"} />
               Home
             </a>
           </li>
           <li>
             <a href="#" class="nav-link link-dark">
-              <DashboardIcon />
+              <DashboardIcon fontSize="large" className={"mr-1"} />
               Dashboard
             </a>
           </li>
           <li>
             <a href="#" class="nav-link link-dark">
-              <ImportContactsIcon />
-              Orders
+              <ImportContactsIcon fontSize="large" className={"mr-1"} />
+              Contacts
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link link-dark">
+              <BookmarksIcon fontSize="large" className={"mr-1"} />
+              Bookmarks
             </a>
           </li>
 
-          <li>
+          {/* <li>
             <a href="#" class="nav-link link-dark">
               Customers
             </a>
-          </li>
+          </li> */}
         </ul>
       </div>
     </div>

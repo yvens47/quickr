@@ -1,10 +1,12 @@
 import { Fragment } from "react";
-
 import Post from "./post";
-const Posts = ({ posts, like }) => {
+import { Skeleton } from "@material-ui/core";
+import PostSkeletonCard from "./postSkeleton";
+const Posts = ({ posts, like, comment }) => {
   return (
     <Fragment>
-      {posts && posts.map(post => <Post like={like} post={post} />)}
+      {posts &&
+        posts.map(post => <Post comment={comment} like={like} post={post} />)}
     </Fragment>
   );
 };
