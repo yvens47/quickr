@@ -7,7 +7,11 @@ import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import EmojiEmotionsIcon from "@material-ui/icons/EmojiEmotions";
 import GroupsRoundedIcon from "@material-ui/icons/GroupsRounded";
 import Button from "@material-ui/core/Button";
+import CloseIcon from "@material-ui/icons/Close";
+import { useState } from "react";
 const DialogContent = props => {
+  const [media, setMedia] = useState(false);
+
   return (
     <div className="container">
       <form onSubmit={props.post}>
@@ -68,8 +72,14 @@ const DialogContent = props => {
                 placeholder="what's on your mind?"
               />
             </div>
-            <div className="post_image-drag mb-2">
-              <div className="image-drag border bordrer-1 bg-light d-flex justify-content-center align-items-center mt-2">
+            <div
+              className="post_image-drag mb-2"
+              style={{
+                display: media ? "block" : "none",
+                transition: "all 20ms"
+              }}
+            >
+              <div className="image-drag  bg-light d-flex justify-content-center align-items-center mt-2">
                 {props.selectedFile ? (
                   <div className="filePreview p-2 d-flex justify-content-start">
                     {props.upload.map(image => (
@@ -82,7 +92,16 @@ const DialogContent = props => {
                   </div>
                 ) : (
                   <div className="inner-image-upload d-flex  ">
-                    <label for="formFile" className="form-label border py-3">
+                    <div>
+                      <IconButton
+                        component={"span"}
+                        onClick={() => setMedia(false)}
+                      >
+                        <CloseIcon />
+                      </IconButton>
+                    </div>
+
+                    <label for="formFile" className="form-label  py-3">
                       <CloudUploadIcon sx={{ fontSize: 40 }} />
                       <p>Upload {`${props.type}s`}</p>
                     </label>
@@ -102,9 +121,9 @@ const DialogContent = props => {
             </div>
           </div>
         </div>
-        <div className="row">
+        <div className="row py-3">
           <div className="col-md-12 ">
-            <div className="col-md-12 d-flex flex-row  justify-content-between border align-items-center">
+            <div className="col-md-12 d-flex flex-row  justify-content-between  align-items-center ">
               <div className="flex-fill fw-bold" style={{ padding: "5px" }}>
                 Add to your post
               </div>
@@ -116,7 +135,7 @@ const DialogContent = props => {
                   <IconButton
                     color="info"
                     data-option="photo"
-                    onClick={props.handlePostOption}
+                    onClick={() => setMedia(true)}
                   >
                     <PhotoLibraryIcon />
                   </IconButton>
