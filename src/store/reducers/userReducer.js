@@ -2,7 +2,8 @@ import {
   GET_USER,
   IS_LOGIN,
   IS_LOGIN_ERROR,
-  SIGN_UP_USER
+  SIGN_UP_USER,
+  SIGN_OUT_USER
 } from "../actions/type";
 // const GET_USER = "GET_USER";
 // const IS_LOGIN = "IS_LOGGED_IN";
@@ -23,6 +24,9 @@ export default function userReducer(state = {}, action) {
     case SIGN_UP_USER:
       alert("your have signeud");
       return state;
+    case SIGN_OUT_USER:
+      alert("signed ouy");
+      return { ...state, loggedIn: false };
 
     default:
       return state;

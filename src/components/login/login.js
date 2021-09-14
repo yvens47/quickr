@@ -8,12 +8,12 @@ import Button from "@material-ui/core/Button";
 import Stack from "@material-ui/core/Stack";
 import GoogleIcon from "@material-ui/icons/Google";
 import { styled } from "@material-ui/core/styles";
-import { loginWithGoogle } from "../../store/actions/index";
+import { loginWithGoogle, login, isLoggedIn } from "../../store/actions/index";
 
 const Login = props => {
   const [account, setAccount] = useState({ email: "", password: "" });
 
-  if (props.isLogin) {
+  if (props.loggedIn) {
     // redirect with flash message
     return <Redirect to="/home" />;
   }
@@ -25,6 +25,7 @@ const Login = props => {
   const handleLogin = e => {
     e.preventDefault();
     // login user
+    props.login(account);
   };
   const handleLoginWithGoogle = e => {
     e.preventDefault();
@@ -104,7 +105,7 @@ const Login = props => {
 };
 function mapStateToProps(state) {
   return {
-    user: state
+    loggedIn: state.user.loggedIn
   };
 }
-export default connect(mapStateToProps, { loginWithGoogle })(Login);
+export default connect(mapStateToProps, { loginWithGoogle, login })(Login);

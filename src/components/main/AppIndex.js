@@ -16,8 +16,10 @@ import Header from "../header";
 import Footer from "../footer";
 import DialogContent from "./dialogContent";
 import { connect } from "react-redux";
+
 import {
   isLoggedIn,
+  logOut,
   getPosts,
   addPost,
   likePost,
@@ -25,11 +27,12 @@ import {
 } from "../../store/actions/index";
 import { serverTimestamp } from "firebase/firestore";
 import Sidebar from "./sidebar";
+import BottomNavbar from "./bottomNav";
 
 class AppIndexPage extends Component {
   state = {
     open: false,
-    type: "",
+    type: "text",
     // liked: false,
     userPost: {
       file: null,
@@ -105,8 +108,8 @@ class AppIndexPage extends Component {
     };
     // post
     const postCopy = { ...this.state.userPost, user: user };
-
     this.props.addPost(postCopy, this.state.type, this.state.upload);
+    // clear post  object
   };
   handlePostOption = e => {
     const postCopy = {
@@ -122,8 +125,8 @@ class AppIndexPage extends Component {
     }
     return (
       <Fragment>
-        <Header loggedIn={this.props.loggedIn} />
-        <div className="container-fluid">
+        <Header loggedIn={this.props.loggedIn} logout={this.props.logOut} />
+        <div className="container-fluid" onScroll={() => alert("scrolled")}>
           <div className="row py-5   border-bottom justify-content-center p-2 ">
             <div className="col-md-3">
               <Sidebar
@@ -231,6 +234,11 @@ class AppIndexPage extends Component {
           />
         </Dialog>
 
+        {/* display bottom nav on phone scree */}
+        <div className="bottomNav mt-5">
+          <BottomNavbar />
+        </div>
+
         <Footer />
       </Fragment>
     );
@@ -248,5 +256,6 @@ export default connect(mapStateToProps, {
   getPosts,
   addPost,
   likePost,
-  addComment
+  addComment,
+  logOut
 })(AppIndexPage);

@@ -5,6 +5,7 @@ const Header = props => {
   const logout = e => {
     e.preventDefault();
     alert("Signout not yet implemented");
+    props.logout();
   };
   return (
     <nav

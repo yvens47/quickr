@@ -5,6 +5,7 @@ import {
   getAuth,
   signInWithPopup,
   onAuthStateChanged,
+  signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signOut
 } from "firebase/auth";
@@ -41,6 +42,7 @@ import {
 } from "./type";
 
 const DB_COLLECTION_POSTS = "Posts";
+const auth = getAuth(app);
 
 /************************************
  * user functions starts here       *
@@ -98,6 +100,26 @@ export function loginWithGoogle() {
         // The AuthCredential type that was used.
         const credential = GoogleAuthProvider.credentialFromError(error);
         // ...
+      });
+  };
+}
+export function login(account) {
+  return dispatch => {
+    const { email, password } = account;
+    signInWithEmailAndPassword(auth, email, password)
+      .then(result => {
+        //const credential = GoogleAuthProvider.credentialFromResult(result);
+        //const token = credential.accessToken;
+        // The signed-in user info.
+        const user = result.user;
+
+        dispatch({
+          type: GET_USER,
+          payload: user
+        });
+      })
+      .catch(e => {
+        console.log(e);
       });
   };
 }
@@ -211,7 +233,7 @@ export function addPost(post, postType, file) {
         const upload = await uploadBytes(storageRef, photo, photo);
         const url = await getDownloadURL(ref(storage, storageRef));
         post.videos.push(url);
-       
+
         post.type = photo.type;
       }
       post.video = post.videos[0];
@@ -230,6 +252,18 @@ export function addPost(post, postType, file) {
       });
     } else {
       //its apost
+      const docRef = addDoc(
+        collection(db, DB_COLLECTION_POSTS),
+        post,
+        result => {
+          console.log(result);
+        }
+      );
+
+      dispatch({
+        type: ADD_POST,
+        message: `Document written with ID:  ${docRef.id}`
+      });
     }
   };
 }

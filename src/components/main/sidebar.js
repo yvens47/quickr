@@ -7,7 +7,7 @@ import BookmarksIcon from "@material-ui/icons/Bookmarks";
 import { Link } from "react-router-dom";
 const Sidebar = props => {
   return (
-    <div className="sidebar-main d-flex flex-column">
+    <div className="sidebar-main d-flex flex-column d-none d-md-block ">
       <div class="d-flex flex-column flex-shrink-0 p-2 bg-light">
         <div className="sidebar-profile position-relative ">
           <div className="profile position-relative top-0 start-0 ">

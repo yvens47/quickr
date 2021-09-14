@@ -101,7 +101,7 @@ const Post = ({ post, like, comment }) => {
                 {post.photos.map(photo => (
                   <img
                     key={post.description}
-                    className="flex-shrink-1 p-1 m-1"
+                    className="flex-sm-shrink-0 flex-md-shrink-1 p-1 m-1"
                     src={photo}
                     alt={post.description}
                     style={{ width: "100%", cursor: "pointer" }}
@@ -133,6 +133,17 @@ const Post = ({ post, like, comment }) => {
               )}
             </div>
           )}
+          {post.postType === "text" && (
+            <div
+              className="post-photo-wrapper"
+              style={{ position: "relative" }}
+            >
+              <div className="post-photo d-flex" style={{}}>
+                <p>{post.description}</p>
+                ))}
+              </div>
+            </div>
+          )}
 
           <div className="comments-wrapper-button  d-flex justify-content-between mt-2 pb-2 border-bottom">
             <div class="btn    ">
@@ -144,10 +155,12 @@ const Post = ({ post, like, comment }) => {
               >
                 <ThumbUpOutlinedIcon />
               </IconButton>
-              {post.likes.length > 1
-                ? `${post.likes.length} likes`
-                : `${post.likes.length} like`}
-              {/* {post.likes.length} */}
+              <span class="social-details d-none d-md-inline">
+                {post.likes.length > 1
+                  ? `${post.likes.length} likes`
+                  : `${post.likes.length} like`}
+                {/* {post.likes.length} */}
+              </span>
             </div>
             <div>
               <div class=" btn     rounded-0   ">
@@ -160,10 +173,12 @@ const Post = ({ post, like, comment }) => {
                 >
                   <CommentIcon />
                 </IconButton>
-                {post.likes.length > 1
-                  ? `${post.comments.length} comment`
-                  : `${post.comments.length} comments`}
-                {/* {post.comments.length} */}
+                <span class="social-details d-none d-md-inline">
+                  {post.likes.length > 1
+                    ? `${post.comments.length} comment`
+                    : `${post.comments.length} comments`}
+                  {/* {post.comments.length} */}
+                </span>
               </div>
 
               <div class=" btn     rounded-0   ">

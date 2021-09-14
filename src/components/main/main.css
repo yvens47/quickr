@@ -100,3 +100,42 @@
 .profile .edit-icon {
   z-index: 2;
 }
+.bottomNav {
+  display: none;
+}
+
+@media (max-width: 575.98px) {
+  .bottomNav {
+    display: block;
+    position: fixed;
+    bottom: 0;
+    z-index: 1090;
+    width: 100%;
+  }
+  .footer {
+    display: none;
+  }
+}
+
+/* // Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) {
+  .social-details {
+    display: none;
+  }
+}
+
+/* // Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+}
+
+/* // Large devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+}
+
+/* // X-Large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+}
+
+/* // XX-Large devices (larger desktops, 1400px and up) */
+@media (min-width: 1400px) {
+}
