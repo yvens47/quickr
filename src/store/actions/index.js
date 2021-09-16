@@ -1,5 +1,6 @@
 import { app } from "../../utils/firebase";
 import firebase from "firebase/app";
+import { toast } from "react-toastify";
 import {
   GoogleAuthProvider,
   getAuth,
@@ -14,6 +15,7 @@ import {
   collection,
   getDocs,
   addDoc,
+  getDoc,
   serverTimestamp,
   doc,
   setDoc,
@@ -23,7 +25,11 @@ import {
   orderBy,
   FieldValue,
   arrayUnion,
-  arrayRemove
+  arrayRemove,
+  Timestamp,
+  collectionGroup,
+  Query,
+  where
 } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import {
@@ -237,6 +243,7 @@ export function addPost(post, postType, file) {
         post.type = photo.type;
       }
       post.video = post.videos[0];
+      post.date = Timestamp.now();
 
       const docRef = addDoc(
         collection(db, DB_COLLECTION_POSTS),
@@ -292,15 +299,36 @@ user can only post one comment.
 */
 
 export function addComment(postId, comment) {
-  return dispatch => {
+  return async dispatch => {
     const db = getFirestore(app);
-    const docRef = doc(db, DB_COLLECTION_POSTS, postId);
-    // if not likes the post
-    updateDoc(docRef, { comments: arrayUnion(comment) }, d => {
-      console.log("successfully updated");
-      console.log(d);
-    });
-    /***********like the post */
-    dispatch({ type: LIKE_POST });
+    const docRef = doc(db, DB_COLLECTION_POSTS, `${postId}`);
+
+    //console.log(docRef);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      if (
+        docSnap.get("comments").filter(e => e.uid === comment.uid).length > 0
+      ) {
+        // flash message to User you  already posted
+
+        toast.error("🦄 you already posted a comment to this post", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined
+        });
+      } else {
+        updateDoc(docRef, { comments: arrayUnion(comment) }, d => {
+          console.log("successfully updated");
+          console.log(d);
+        });
+        /***********like the post */
+        dispatch({ type: COMMENT_ON_POST });
+      }
+    }
   };
 }

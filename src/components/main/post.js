@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import { styled } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
@@ -12,18 +14,19 @@ import AccessTimeIcon from "@material-ui/icons/AccessTime";
 import Comments from "./comments";
 import { Avatar, Badge, TextField } from "@material-ui/core";
 // import Stack from "@material-ui/core/Stack";
-import { useState } from "react";
 import TimeAgo from "react-timeago";
 import { Skeleton } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import UserHeaderInfo from "./user-header";
 import Lightbox from "react-image-lightbox";
 import "react-image-lightbox/style.css";
-const Post = ({ post, like, comment }) => {
+
+const Post = ({ post, like, comment, commentTextChange, commentText }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isCommentHide, setIsCommentHide] = useState(true);
   const [lightBoxOpen, setLightBoxOpen] = useState(false);
   const [photoIndex, setPhotoIndex] = useState(0);
+  const [filter, setFilter] = useState("All");
   const handleOpenLightBox = () => {
     setLightBoxOpen(true);
   };
@@ -42,6 +45,12 @@ const Post = ({ post, like, comment }) => {
     } else {
       setIsCommentHide(true);
     }
+  };
+
+  const filterComments = () => {
+    // get filter action from data-id and passit to setFilter
+    alert("filter not yet implemented");
+    setFilter("Most Recent");
   };
 
   return (
@@ -153,14 +162,15 @@ const Post = ({ post, like, comment }) => {
                 aria-label="upload picture"
                 component="span"
               >
-                <ThumbUpOutlinedIcon />
+                <Badge badgeContent={post.likes.length} color="action">
+                  <ThumbUpOutlinedIcon />
+                </Badge>
               </IconButton>
-              <span class="social-details d-none d-md-inline">
+              {/* <span class="social-details d-none d-md-inline">
                 {post.likes.length > 1
                   ? `${post.likes.length} likes`
                   : `${post.likes.length} like`}
-                {/* {post.likes.length} */}
-              </span>
+              </span> */}
             </div>
             <div>
               <div class=" btn     rounded-0   ">
@@ -171,14 +181,16 @@ const Post = ({ post, like, comment }) => {
                   data-type={post.postId}
                   onClick={showComment}
                 >
-                  <CommentIcon />
+                  <Badge badgeContent={post.comments.length} color="action">
+                    <CommentIcon />
+                  </Badge>
                 </IconButton>
-                <span class="social-details d-none d-md-inline">
+                {/* <span class="social-details d-none d-md-inline">
                   {post.likes.length > 1
                     ? `${post.comments.length} comment`
                     : `${post.comments.length} comments`}
-                  {/* {post.comments.length} */}
-                </span>
+                 
+                </span> */}
               </div>
 
               <div class=" btn     rounded-0   ">
@@ -256,16 +268,18 @@ const Post = ({ post, like, comment }) => {
                 {/* comments form */}
                 <form data-id={post.postId} onSubmit={comment}>
                   <TextField
+                    onChange={commentTextChange}
                     placeholder="add your comment"
                     fullWidth={true}
                     multiLine={true}
+                    value={commentText}
                   />
                 </form>
                 {/* comments form ends here */}
               </div>
             </div>
             {/* display all comments */}
-            <Comments comments={post.comments} />
+            <Comments comments={post.comments} filter={"Most Recent"} />
           </div>
         </div>
         {/* <div className="card-footer text-muted">2 days ago</div> */}

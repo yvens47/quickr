@@ -1,10 +1,17 @@
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import Comment from "./comment";
-const Comments = ({ comments }) => {
+const Comments = ({ comments, filter, commentTextChange }) => {
+  const [slice, setSlice] = useState({ start: 0, end: 20 });
+  // filter comments by [most liked,most replied to, all comments, top 5]
+
   return (
     <Fragment>
-      {comments.map(comment => (
-        <Comment comment={comment} />
+      {comments.slice(slice.start, slice.end).map(comment => (
+        <Comment
+          key={comment.uid}
+          comment={comment}
+          commentTextChange={commentTextChange}
+        />
       ))}
     </Fragment>
   );

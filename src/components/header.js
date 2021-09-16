@@ -2,11 +2,6 @@ import { Link } from "react-router-dom";
 
 import { useEffect } from "react";
 const Header = props => {
-  const logout = e => {
-    e.preventDefault();
-    alert("Signout not yet implemented");
-    props.logout();
-  };
   return (
     <nav
       // style={{ backgroundColor: "#424152" }}
@@ -83,7 +78,7 @@ const Header = props => {
                   <hr className="dropdown-divider" />
                 </li>
                 <li>
-                  <Link className="dropdown-item" to="#" onClick={logout}>
+                  <Link className="dropdown-item" to="#" onClick={props.logout}>
                     Sign out
                   </Link>
                 </li>

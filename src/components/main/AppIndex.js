@@ -25,7 +25,7 @@ import {
   likePost,
   addComment
 } from "../../store/actions/index";
-import { serverTimestamp } from "firebase/firestore";
+
 import Sidebar from "./sidebar";
 import BottomNavbar from "./bottomNav";
 
@@ -33,6 +33,7 @@ class AppIndexPage extends Component {
   state = {
     open: false,
     type: "text",
+    userComment: "",
     // liked: false,
     userPost: {
       file: null,
@@ -51,8 +52,7 @@ class AppIndexPage extends Component {
       },
 
       likes: [],
-      comments: [],
-      date: serverTimestamp()
+      comments: []
     },
     upload: [],
     selectedFile: false
@@ -94,10 +94,25 @@ class AppIndexPage extends Component {
     const user = { displayName, email, photoURL, uid };
     this.props.likePost(id, user);
   };
+
+  commentTextChange = ({ currentTarget }) => {
+    this.setState({ userComment: currentTarget.value });
+  };
+
   comment = e => {
     e.preventDefault();
     // add to db
-    this.props.addComment(e.currentTarget.getAttribute("data-id"));
+    const usercomment = {
+      displayName: this.props.user.displayName,
+      text: this.state.userComment,
+
+      uid: this.props.user.uid,
+      image: this.props.user.photoURL,
+      reply: [],
+      likes: []
+    };
+    this.setState({ userComment: "" });
+    this.props.addComment(e.currentTarget.getAttribute("data-id"), usercomment);
   };
   post = () => {
     const user = {
@@ -118,14 +133,17 @@ class AppIndexPage extends Component {
     };
     this.setState({ userPost: postCopy });
   };
+
   render() {
     if (!this.props.loggedIn) {
+      console.log("130", this.props.loggedIn);
       // Redirect
-      <Redirect to="/login" />;
+      return <Redirect to="/login" />;
+      return <h1>please login</h1>;
     }
     return (
       <Fragment>
-        <Header loggedIn={this.props.loggedIn} logout={this.props.logOut} />
+        <Header loggedIn={this.props.loggedIn} logout={this.props.logout} />
         <div className="container-fluid" onScroll={() => alert("scrolled")}>
           <div className="row py-5   border-bottom justify-content-center p-2 ">
             <div className="col-md-3">
@@ -141,13 +159,14 @@ class AppIndexPage extends Component {
               <div className=" post-media-content-wrapper border   p-3 d-flex flex-column rounded">
                 <div className="mb-3 d-flex ">
                   <span className="align-self-center mr-2">
-                    <img
+                    <Avatar src={this.props.user.photoURL} />
+                    {/* <img
                       src="https://github.com/mdo.png"
                       alt="mdo"
                       width="32"
                       height="32"
                       className="rounded-circle mr-2"
-                    />
+                    /> */}
                   </span>
                   <span className="flex-grow-1 ml-2">
                     <input
@@ -198,7 +217,7 @@ class AppIndexPage extends Component {
                       style={{ border: "none" }}
                       className="rounded-pill mood mt-1 tn btn-light mt-1 flex-fill"
                       variant="outlined"
-                      startIcon={<MoodIcon />}
+                      startIcon={<MoodIcon color="danger" />}
                     >
                       Feeling
                     </Button>
@@ -206,6 +225,8 @@ class AppIndexPage extends Component {
                 </div>
               </div>
               <Posts
+                commentText={this.state.userComment}
+                commentTextChange={this.commentTextChange}
                 comment={this.comment}
                 like={this.like}
                 posts={this.props.posts}
