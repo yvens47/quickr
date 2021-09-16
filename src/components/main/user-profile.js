@@ -41,7 +41,7 @@ function a11yProps(index) {
   };
 }
 
-const UserProfile = () => {
+const UserProfile = props => {
   const [value, setValue] = React.useState(0);
   console.log(user);
 
@@ -50,7 +50,7 @@ const UserProfile = () => {
   };
   return (
     <Fragment>
-      <Header isLogin={true} />
+      <Header loggedIn={props.loggedIn} logout={props.logout} />
       <div className="container-fluid">
         <div className="row">
           <div className="col-md-4 mt-5">

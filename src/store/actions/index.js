@@ -46,6 +46,7 @@ import {
   COMMENTS,
   COMMENT_ON_POST
 } from "./type";
+import { createDeflate } from "zlib";
 
 const DB_COLLECTION_POSTS = "Posts";
 const auth = getAuth(app);
@@ -130,12 +131,52 @@ export function login(account) {
   };
 }
 
-export function signUp(email, password) {
+export function signUp(account) {
   return dispatch => {
     const auth = getAuth(app);
-    createUserWithEmailAndPassword(auth, email, password)
-      .then(result => {
-        dispatch({ type: SIGN_UP_USER, payload: result });
+    createUserWithEmailAndPassword(auth, account.email, account.password)
+      .then(async result => {
+        // save the result to users profile table
+        const user = result.user;
+        user.displayName = account.fullname;
+        user.photoURL =
+          "https://w7.pngwing.com/pngs/741/68/png-transparent-user-computer-icons-user-miscellaneous-cdr-rectangle-thumbnail.png";
+        const {
+          uid,
+          email,
+          emailVerified,
+          displayName,
+          isAnonymous,
+          photoURL,
+          createdAt,
+          lastLoginAt
+        } = user;
+
+        // update the profile collection
+        const db = getFirestore(app);
+        //const postBucket = "postImages";
+        const storage = getStorage(app);
+        const docRef = doc(db, "users", uid);
+        await setDoc(
+          docRef,
+          {
+            uid,
+            email,
+            emailVerified,
+            displayName,
+            isAnonymous,
+            photoURL,
+            createdAt: Timestamp.now(),
+            lastLoginAt: Timestamp.now(),
+            friends: [],
+            followers: [],
+            photos: []
+          },
+          { merge: true }
+        );
+
+        console.log(user);
+        dispatch({ type: SIGN_UP_USER, payload: user });
       })
       .catch(error => {
         console.log(error);
@@ -150,6 +191,7 @@ export function logOut() {
       .then(() => {
         // Sign-out successful.
         dispatch({ type: SIGN_OUT_USER });
+        toast.success("Signed out succesfully");
       })
       .catch(error => {
         // An error happened.

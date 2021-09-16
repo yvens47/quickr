@@ -25,7 +25,6 @@ export default function userReducer(state = {}, action) {
       alert("your have signeud");
       return state;
     case SIGN_OUT_USER:
-      alert("signed ouy");
       return { ...state, loggedIn: false };
 
     default:

@@ -136,16 +136,14 @@ class AppIndexPage extends Component {
 
   render() {
     if (!this.props.loggedIn) {
-      console.log("130", this.props.loggedIn);
       // Redirect
       return <Redirect to="/login" />;
-      return <h1>please login</h1>;
     }
     return (
       <Fragment>
         <Header loggedIn={this.props.loggedIn} logout={this.props.logout} />
         <div className="container-fluid" onScroll={() => alert("scrolled")}>
-          <div className="row py-5   border-bottom justify-content-center p-2 ">
+          <div className="row py-3   border-bottom justify-content-center p-2 mb-5 ">
             <div className="col-md-3">
               <Sidebar
                 display={this.props.user && this.props.user.displayName}

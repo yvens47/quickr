@@ -11,10 +11,10 @@ import { connect } from "react-redux";
 import { Link, Redirect } from "react-router-dom";
 import { isLoggedIn } from "../../store/actions/index";
 function IndexPage(props) {
-  useEffect(() => {
-    props.isLoggedIn();
-  }, []);
-  if (props.isLoggedIn) return <Redirect to="/home" />;
+  // useEffect(() => {
+  //   props.isLoggedIn();
+  // }, []);
+  if (props.loggedIn) return <Redirect to="/home" />;
 
   return (
     <Fragment>

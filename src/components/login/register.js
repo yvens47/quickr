@@ -9,19 +9,17 @@ const Register = props => {
   // states
   const [account, setAccount] = useState({
     email: "",
-    username: "",
+    fullname: "",
     password: ""
   });
-  useEffect(() => {
-    props.isLoggedIn();
-  }, []);
 
   // redirect if login no need to register
-  if (props.isLoggedIn) return <Redirect to="/home" />;
+  if (props.loggedIn) return <Redirect to="/home" />;
 
   const handleSubmit = e => {
     e.preventDefault();
     alert(JSON.stringify(account));
+    props.signUp(account);
   };
 
   const handleChange = ({ currentTarget }) => {
@@ -55,15 +53,15 @@ const Register = props => {
                 </div>
                 <div className="mb-3">
                   <label for="exampleFormControlInput1" className="form-label">
-                    Username
+                    Full Name
                   </label>
                   <input
                     onChange={handleChange}
-                    name="username"
+                    name="fullname"
                     type="text"
                     className="form-control"
                     id="exampleFormControlInput1"
-                    placeholder="Username"
+                    placeholder="fullname"
                   />
                 </div>
                 <div className="mb-3">
