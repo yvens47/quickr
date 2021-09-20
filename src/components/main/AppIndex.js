@@ -63,7 +63,9 @@ class AppIndexPage extends Component {
   }
   componentDidMount = async () => {
     this.props.isLoggedIn();
-    this.props.getPosts(0, 10);
+    if (this.props.loggedIn) {
+      this.props.getPosts();
+    }
   };
   handleClickOpen = e => {
     this.setState({
@@ -102,7 +104,7 @@ class AppIndexPage extends Component {
   comment = e => {
     e.preventDefault();
     // add to db
-    const usercomment = {
+    const userComment = {
       displayName: this.props.user.displayName,
       text: this.state.userComment,
 
@@ -111,10 +113,12 @@ class AppIndexPage extends Component {
       reply: [],
       likes: []
     };
+
+    this.props.addComment(e.currentTarget.getAttribute("data-id"), userComment);
     this.setState({ userComment: "" });
-    this.props.addComment(e.currentTarget.getAttribute("data-id"), usercomment);
   };
-  post = () => {
+  post = e => {
+    e.preventDefault();
     const user = {
       id: this.props.user.uid,
       name: this.props.user.displayName,
@@ -137,12 +141,20 @@ class AppIndexPage extends Component {
   render() {
     if (!this.props.loggedIn) {
       // Redirect
-      return <Redirect to="/login" />;
+      return (
+        <Redirect
+          to={{
+            pathname: "/login",
+
+            state: { referrer: "/home" }
+          }}
+        />
+      );
     }
     return (
       <Fragment>
         <Header loggedIn={this.props.loggedIn} logout={this.props.logout} />
-        <div className="container-fluid" onScroll={() => alert("scrolled")}>
+        <div className="container-fluid">
           <div className="row py-3   border-bottom justify-content-center p-2 mb-5 ">
             <div className="col-md-3">
               <Sidebar
@@ -154,17 +166,15 @@ class AppIndexPage extends Component {
             </div>
             {/* Main content */}
             <div className="col-md-6 app-contents">
-              <div className=" post-media-content-wrapper border   p-3 d-flex flex-column rounded">
+              <div
+                className=" post-media-content-wrapper border   p-3 d-flex flex-column rounded
+              
+              "
+                style={{ background: "white" }}
+              >
                 <div className="mb-3 d-flex ">
                   <span className="align-self-center mr-2">
                     <Avatar src={this.props.user.photoURL} />
-                    {/* <img
-                      src="https://github.com/mdo.png"
-                      alt="mdo"
-                      width="32"
-                      height="32"
-                      className="rounded-circle mr-2"
-                    /> */}
                   </span>
                   <span className="flex-grow-1 ml-2">
                     <input
@@ -181,6 +191,7 @@ class AppIndexPage extends Component {
                 <div className="post-media border-top">
                   <div className="post-media-items d-flex justify-content-between">
                     <Button
+                      color="secondary"
                       data-type="video"
                       data-bs-toggle="modal"
                       data-bs-target="#exampleModal"
@@ -196,6 +207,7 @@ class AppIndexPage extends Component {
                       Video
                     </Button>
                     <Button
+                      color="secondary"
                       data-type="photo"
                       data-bs-toggle="modal"
                       data-bs-target="#exampleModal"
@@ -208,6 +220,7 @@ class AppIndexPage extends Component {
                       Photo
                     </Button>
                     <Button
+                      color="secondary"
                       data-type="Feeling"
                       data-bs-toggle="modal"
                       data-bs-target="#exampleModal"

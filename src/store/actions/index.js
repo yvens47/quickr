@@ -41,36 +41,44 @@ import {
   SIGN_OUT_USER,
   SIGN_OUT_USER_ERROR,
   READ_POSTS,
+  READ_POSTS_ERROR,
   ADD_POST,
   LIKE_POST,
   COMMENTS,
-  COMMENT_ON_POST
+  COMMENT_ON_POST,
+  SUGGESTED_FRIENDS,
+  SUGGESTED_FRIENDS_ERROR
 } from "./type";
-import { createDeflate } from "zlib";
+
+import { showToast } from "../../utils/utills";
 
 const DB_COLLECTION_POSTS = "Posts";
 const auth = getAuth(app);
+const DB = getFirestore(app);
 
 /************************************
  * user functions starts here       *
  * **********************************/
 export function isLoggedIn() {
-  return dispatch => {
+  return async dispatch => {
     const auth = getAuth(app);
-    onAuthStateChanged(auth, user => {
+    onAuthStateChanged(auth, async user => {
       if (user) {
-        // User is signed in, see docs for a list of available properties
-        // https://firebase.google.com/docs/reference/js/firebase.User
-        const uid = user.uid;
-
-        dispatch({
-          type: IS_LOGIN,
-          payload: user
-        });
-        // ...
-      } else {
-        // User is signed out
-        // ...
+        // update the profile collection
+        const { uid } = user;
+        const db = getFirestore(app);
+        //const postBucket = "postImages";
+        const docRef = collection(db, "users");
+        const q = query(docRef, where("uid", "==", uid));
+        const querySnapshot = await getDocs(q);
+        if (querySnapshot.size > 0) {
+          querySnapshot.forEach(snapshot => {
+            dispatch({
+              type: IS_LOGIN,
+              payload: snapshot.data()
+            });
+          });
+        }
       }
     });
   };
@@ -82,16 +90,50 @@ export function loginWithGoogle() {
     provider.addScope("https://www.googleapis.com/auth/contacts.readonly");
     const auth = getAuth(app);
     signInWithPopup(auth, provider)
-      .then(result => {
+      .then(async result => {
         const credential = GoogleAuthProvider.credentialFromResult(result);
         const token = credential.accessToken;
         // The signed-in user info.
         const user = result.user;
+        const {
+          uid,
+          email,
+          emailVerified,
+          displayName,
+          isAnonymous,
+          photoURL,
+          createdAt,
+          lastLoginAt
+        } = user;
 
-        dispatch({
-          type: GET_USER,
-          payload: user
-        });
+        // update the profile collection
+        const db = getFirestore(app);
+        //const postBucket = "postImages";
+        const storage = getStorage(app);
+        const docRef = collection(db, "users");
+        const q = query(docRef, where("uid", "==", uid));
+        const querySnapshot = await getDocs(q);
+        if (querySnapshot.size === 0) {
+          // add to users collection
+          // Add a new document in collection "cities"
+          await setDoc(doc(db, "users", uid), {
+            uid,
+            email,
+            emailVerified,
+            displayName,
+            isAnonymous,
+            photoURL,
+
+            friends: [],
+            followers: [],
+            photos: []
+          });
+        } else {
+          dispatch({
+            type: GET_USER,
+            payload: querySnapshot.docs
+          });
+        }
       })
       .catch(error => {
         // Handle Errors here.
@@ -113,17 +155,20 @@ export function loginWithGoogle() {
 export function login(account) {
   return dispatch => {
     const { email, password } = account;
+    console.log("line 17", account);
     signInWithEmailAndPassword(auth, email, password)
-      .then(result => {
-        //const credential = GoogleAuthProvider.credentialFromResult(result);
-        //const token = credential.accessToken;
-        // The signed-in user info.
+      .then(async result => {
         const user = result.user;
-
-        dispatch({
-          type: GET_USER,
-          payload: user
-        });
+        const db = getFirestore(app);
+        const docRef = doc(db, "users", `${user.uid}`);
+        //console.log(docRef);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          dispatch({
+            type: GET_USER,
+            payload: docSnap.get()
+          });
+        }
       })
       .catch(e => {
         console.log(e);
@@ -157,29 +202,37 @@ export function signUp(account) {
         //const postBucket = "postImages";
         const storage = getStorage(app);
         const docRef = doc(db, "users", uid);
-        await setDoc(
-          docRef,
-          {
-            uid,
-            email,
-            emailVerified,
-            displayName,
-            isAnonymous,
-            photoURL,
-            createdAt: Timestamp.now(),
-            lastLoginAt: Timestamp.now(),
-            friends: [],
-            followers: [],
-            photos: []
-          },
-          { merge: true }
-        );
-
-        console.log(user);
-        dispatch({ type: SIGN_UP_USER, payload: user });
+        const userProfile = {
+          uid,
+          email,
+          emailVerified,
+          displayName,
+          isAnonymous,
+          photoURL,
+          createdAt: Timestamp.now(),
+          lastLoginAt: Timestamp.now(),
+          friends: [],
+          followers: [],
+          photos: []
+        };
+        await setDoc(docRef, userProfile, { merge: true });
+        dispatch({ type: SIGN_UP_USER, payload: userProfile });
       })
       .catch(error => {
-        console.log(error);
+        if (error.code === "auth/email-already-in-use") {
+          showToast("Email is already in use", error);
+          dispatch({
+            type: SIGN_UP_USER_ERROR,
+            payload: "Email is already in use"
+          });
+        }
+        if (error.code === "auth/invalid-email") {
+          showToast("Invalid email", error);
+          dispatch({
+            type: SIGN_UP_USER_ERROR,
+            payload: "Invalid email"
+          });
+        }
       });
   };
 }
@@ -190,7 +243,7 @@ export function logOut() {
     signOut(auth)
       .then(() => {
         // Sign-out successful.
-        dispatch({ type: SIGN_OUT_USER });
+        dispatch({ type: SIGN_OUT_USER, payload: {} });
         toast.success("Signed out succesfully");
       })
       .catch(error => {
@@ -201,44 +254,70 @@ export function logOut() {
 }
 
 /************************************
+ *         Friends Actions here       *
+ * **********************************/
+
+export function unFriend(myId, usersId = []) {
+  return async dispatch => {};
+}
+
+export function Friends(userid) {
+  return async dispatch => {
+    // list all frriends of logge user;
+  };
+}
+export function suggestedFriends(limit, userid) {
+  // random show 10 friends to a user that does not have friends yet
+  return async dispatch => {
+    const q = query(collection(DB, "users"));
+    onSnapshot(
+      q,
+      querySnapshot => {
+        const userList = [];
+        console.log("277", querySnapshot.size);
+
+       
+          querySnapshot.forEach(result => {
+            console.log(result)
+            userList.push({
+             
+              ...result.data()
+              // date: result.data().date.toDate()
+            });
+          });
+          dispatch({ type: SUGGESTED_FRIENDS, payload: userList });
+        
+      },
+      error => dispatch({ type: SUGGESTED_FRIENDS_ERROR, payload: error })
+    );
+  };
+}
+
+/************************************
  *         Posts Actions here       *
  * **********************************/
 
 export function getPosts(start, limit) {
-  return dispatch => {
+  return async dispatch => {
     const db = getFirestore(app);
-    const q = query(
-      collection(db, DB_COLLECTION_POSTS),
-      orderBy("date", "desc")
-    );
-    const unsubscribe = onSnapshot(
+    const q = query(collection(db, "Posts"), orderBy("date", "desc"));
+
+    onSnapshot(
       q,
       querySnapshot => {
         const data = [];
-        const changes = querySnapshot.docChanges();
-        changes.forEach(change => {
-          if (change.type === "modified") {
-            console.log(change);
-            //alert("modified");
-          }
-          if (change.type === "added" && change.oldIndex >= 0) {
-            // send notifications to users[friends]
-            //alert("new post hasbeen added");
-          }
-        });
         querySnapshot.forEach(doc => {
-          const document = { ...doc.data(), postId: doc.id };
+          // doc.data() is never undefined for query doc snapshots
 
-          document.date = doc.data().date.toDate();
-
-          data.push(document);
+          data.push({
+            id: doc.id,
+            ...doc.data(),
+            date: doc.data().date.toDate()
+          });
         });
         dispatch({ type: READ_POSTS, payload: data });
       },
-
-      error => {
-        console.log(error);
-      }
+      error => dispatch({ type: READ_POSTS_ERROR, payload: error })
     );
   };
 }
@@ -252,6 +331,7 @@ export function addPost(post, postType, file) {
     post.postType = postType;
     //delete fake file property
     delete post.file;
+
     if (postType === "photo") {
       for (var i = 0; i < file.length; i++) {
         const photo = file.item(i);
@@ -261,6 +341,7 @@ export function addPost(post, postType, file) {
         post.photos.push(url);
         post.image = post.photos[0];
       }
+      post.date = Timestamp.now();
 
       const docRef = addDoc(
         collection(db, DB_COLLECTION_POSTS),
@@ -287,6 +368,7 @@ export function addPost(post, postType, file) {
       post.video = post.videos[0];
       post.date = Timestamp.now();
 
+      console.log("line 275", post);
       const docRef = addDoc(
         collection(db, DB_COLLECTION_POSTS),
         post,
@@ -297,21 +379,16 @@ export function addPost(post, postType, file) {
 
       dispatch({
         type: ADD_POST,
-        message: `Document written with ID:  ${docRef.id}`
+        payload: `Document written with ID:  ${docRef.id}`
       });
     } else {
       //its apost
-      const docRef = addDoc(
-        collection(db, DB_COLLECTION_POSTS),
-        post,
-        result => {
-          console.log(result);
-        }
-      );
+      post.date = Timestamp.now();
+      const docRef = await addDoc(collection(db, DB_COLLECTION_POSTS), post);
 
       dispatch({
         type: ADD_POST,
-        message: `Document written with ID:  ${docRef.id}`
+        payload: `Document written with ID:  ${docRef.id}`
       });
     }
   };
@@ -326,12 +403,11 @@ export function likePost(id, user) {
     //check if user already like the post if so dislike
     /*********** dislike the post */
 
-    // if not likes the post
+    //if not likes the post
     updateDoc(docRef, { likes: arrayUnion(user) }, d => {
       console.log("successfully updated");
     });
     /***********like the post */
-
     dispatch({ type: LIKE_POST });
   };
 }
@@ -339,34 +415,24 @@ export function likePost(id, user) {
 add comment base on post id.
 user can only post one comment.
 */
+/************************************
+ *         Comments Actions here       *
+ * **********************************/
 
 export function addComment(postId, comment) {
   return async dispatch => {
     const db = getFirestore(app);
-    const docRef = doc(db, DB_COLLECTION_POSTS, `${postId}`);
-
-    //console.log(docRef);
+    const docRef = doc(db, DB_COLLECTION_POSTS, `${postId}`); //console.log(docRef);
     const docSnap = await getDoc(docRef);
-
     if (docSnap.exists()) {
       if (
         docSnap.get("comments").filter(e => e.uid === comment.uid).length > 0
       ) {
         // flash message to User you  already posted
-
-        toast.error("🦄 you already posted a comment to this post", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined
-        });
+        showToast("🦄 you already posted a comment to this post", "error");
       } else {
         updateDoc(docRef, { comments: arrayUnion(comment) }, d => {
-          console.log("successfully updated");
-          console.log(d);
+          showToast("🦄 Your Comment was added", "success");
         });
         /***********like the post */
         dispatch({ type: COMMENT_ON_POST });

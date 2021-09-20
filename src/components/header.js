@@ -4,8 +4,12 @@ import { useEffect } from "react";
 const Header = props => {
   return (
     <nav
-      // style={{ backgroundColor: "#424152" }}
-      class={`navbar navbar-expand-lg navbar-light bg-light `}
+      style={{ backgroundColor: "#8215953d" }}
+      class={
+        props.scrolled
+          ? `navbar navbar-expand-lg navbar-dark fixed-top `
+          : "navbar navbar-expand-lg navbar-light bg-light "
+      }
     >
       <div className="container-fluid">
         <Link class="navbar-brand fw-bold " to="/" style={{ color: "#9c27b0" }}>

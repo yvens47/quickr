@@ -15,6 +15,7 @@ const Posts = ({ posts, like, comment, commentTextChange, commentText }) => {
             comment={comment}
             like={like}
             post={post}
+            key={post.id}
           />
         ))}
     </Fragment>

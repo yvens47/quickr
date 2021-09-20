@@ -2,12 +2,17 @@ import "./App.css";
 import IndexPage from "./components/home/IndexPage";
 import Login from "./components/login/login";
 
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  Redirect
+} from "react-router-dom";
 import AppIndexPage from "./components/main/AppIndex";
 import UserProfile from "./components/main/user-profile";
 import Register from "./components/login/register";
 import "react-toastify/dist/ReactToastify.css";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import {
   isLoggedIn,
   logOut,
@@ -76,14 +81,28 @@ function App(props) {
             )}
           />
           <Route
+            exact
             path={["/profile"]}
-            render={routerProps => (
-              <UserProfile
-                logout={logout}
-                loggedIn={props.loggedIn}
-                {...routerProps}
-              />
-            )}
+            render={routerProps =>
+              props.loggedIn ? (
+                <UserProfile
+                  logout={logout}
+                  loggedIn={props.loggedIn}
+                  {...routerProps}
+                />
+              ) : (
+                <Redirect
+                  to={{
+                    pathname: "/login",
+                    state: { referrer: "/profile" }
+                  }}
+                />
+              )
+            }
+          />
+          <Route
+            path={["/profile/user"]}
+            render={routerProps => <h2>View so and profile</h2>}
           />
         </Switch>
       </Router>

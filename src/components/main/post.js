@@ -55,12 +55,16 @@ const Post = ({ post, like, comment, commentTextChange, commentText }) => {
 
   return (
     <div className="py-2" key={post.postId}>
-      <div className="card">
+      <div className="card rounded-0">
         <div className="card-body">
           <div className="post-header d-flex flex-column">
             <div className="post-header-user-details d-flex border-bottom">
               <div>
-                <IconButton>
+                <IconButton
+                  onClick={() =>
+                    alert("view User profile... not yet implemented")
+                  }
+                >
                   <Avatar
                     component="span"
                     src={post.user.image}
@@ -77,13 +81,11 @@ const Post = ({ post, like, comment, commentTextChange, commentText }) => {
                 </div>
               </div>
             </div>
-            <div className="py-3">
-              <h5 className="card-title post-head">{post.description}</h5>
-            </div>
           </div>
 
-          {post ? (
-            post.postType === "video" && (
+          {post.postType === "video" && (
+            <>
+              <h5 className="card-title post-head">{post.description}</h5>
               <video
                 controls
                 muted
@@ -96,60 +98,63 @@ const Post = ({ post, like, comment, commentTextChange, commentText }) => {
                 <source src={post.videos} type="video/webm" />
                 Sorry, your browser doesn't support embedded videos.
               </video>
-            )
-          ) : (
-            <Skeleton variant="rectangular" width={"100%"} height={250} />
+            </>
           )}
 
           {post.postType === "photo" && (
-            <div
-              className="post-photo-wrapper"
-              style={{ position: "relative" }}
-            >
-              <div className="post-photo d-flex" style={{}}>
-                {post.photos.map(photo => (
-                  <img
-                    key={post.description}
-                    className="flex-sm-shrink-0 flex-md-shrink-1 p-1 m-1"
-                    src={photo}
-                    alt={post.description}
-                    style={{ width: "100%", cursor: "pointer" }}
-                    onClick={handleOpenLightBox}
+            <>
+              <h5 className="card-title post-head lead ">{post.description}</h5>
+              <div
+                className="post-photo-wrapper"
+                style={{ position: "relative" }}
+              >
+                <div className="post-photo d-flex" style={{}}>
+                  {post.photos.map(photo => (
+                    <img
+                      key={post.description}
+                      className="flex-sm-shrink-0 flex-md-shrink-1 p-1 m-1"
+                      src={photo}
+                      alt={post.description}
+                      style={{
+                        width: "100%",
+                        cursor: "pointer",
+                        border: "solid 1px #eee"
+                      }}
+                      onClick={handleOpenLightBox}
+                    />
+                  ))}
+                </div>
+                {/* Light box */}
+                {lightBoxOpen && (
+                  <Lightbox
+                    enableZoom={false}
+                    mainSrc={post.photos[photoIndex]}
+                    nextSrc={post.photos[(photoIndex + 1) % post.photos.length]}
+                    prevSrc={
+                      post.photos[
+                        (photoIndex + post.photos.length - 1) %
+                          post.photos.length
+                      ]
+                    }
+                    onCloseRequest={() => setLightBoxOpen(false)}
+                    onMovePrevRequest={() =>
+                      setPhotoIndex(
+                        (photoIndex + post.photos.length - 1) %
+                          post.photos.length
+                      )
+                    }
+                    onMoveNextRequest={() =>
+                      setPhotoIndex((photoIndex + 1) % post.photos.length)
+                    }
                   />
-                ))}
+                )}
               </div>
-              {/* Light box */}
-              {lightBoxOpen && (
-                <Lightbox
-                  enableZoom={false}
-                  mainSrc={post.photos[photoIndex]}
-                  nextSrc={post.photos[(photoIndex + 1) % post.photos.length]}
-                  prevSrc={
-                    post.photos[
-                      (photoIndex + post.photos.length - 1) % post.photos.length
-                    ]
-                  }
-                  onCloseRequest={() => setLightBoxOpen(false)}
-                  onMovePrevRequest={() =>
-                    setPhotoIndex(
-                      (photoIndex + post.photos.length - 1) % post.photos.length
-                    )
-                  }
-                  onMoveNextRequest={() =>
-                    setPhotoIndex((photoIndex + 1) % post.photos.length)
-                  }
-                />
-              )}
-            </div>
+            </>
           )}
-          {post.postType === "text" && (
-            <div
-              className="post-photo-wrapper"
-              style={{ position: "relative" }}
-            >
+          {post.postType === "post" && (
+            <div className="post-text" style={{ position: "relative" }}>
               <div className="post-photo d-flex" style={{}}>
-                <p>{post.description}</p>
-                ))}
+                <p class="lead">{post.description}</p>
               </div>
             </div>
           )}
@@ -157,7 +162,7 @@ const Post = ({ post, like, comment, commentTextChange, commentText }) => {
           <div className="comments-wrapper-button  d-flex justify-content-between mt-2 pb-2 border-bottom">
             <div class="btn    ">
               <IconButton
-                onClick={() => like(post.postId)}
+                onClick={() => like(post.id)}
                 color="secondary"
                 aria-label="upload picture"
                 component="span"
@@ -166,11 +171,6 @@ const Post = ({ post, like, comment, commentTextChange, commentText }) => {
                   <ThumbUpOutlinedIcon />
                 </Badge>
               </IconButton>
-              {/* <span class="social-details d-none d-md-inline">
-                {post.likes.length > 1
-                  ? `${post.likes.length} likes`
-                  : `${post.likes.length} like`}
-              </span> */}
             </div>
             <div>
               <div class=" btn     rounded-0   ">
@@ -185,12 +185,6 @@ const Post = ({ post, like, comment, commentTextChange, commentText }) => {
                     <CommentIcon />
                   </Badge>
                 </IconButton>
-                {/* <span class="social-details d-none d-md-inline">
-                  {post.likes.length > 1
-                    ? `${post.comments.length} comment`
-                    : `${post.comments.length} comments`}
-                 
-                </span> */}
               </div>
 
               <div class=" btn     rounded-0   ">
@@ -266,7 +260,7 @@ const Post = ({ post, like, comment, commentTextChange, commentText }) => {
               </div>
               <div className="flex-grow-1">
                 {/* comments form */}
-                <form data-id={post.postId} onSubmit={comment}>
+                <form data-id={post.id} onSubmit={comment}>
                   <TextField
                     onChange={commentTextChange}
                     placeholder="add your comment"

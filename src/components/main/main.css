@@ -104,6 +104,18 @@
   display: none;
 }
 
+.addPhotoBtn {
+  height: 150px;
+  border: solid 1px #eee;
+  background: white;
+  width: 190px;
+}
+.changeProfile {
+  position: absolute;
+  top: 20px;
+  left: 10px;
+}
+
 @media (max-width: 575.98px) {
   .bottomNav {
     display: block;

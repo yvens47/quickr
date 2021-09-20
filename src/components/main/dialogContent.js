@@ -22,8 +22,8 @@ const DialogContent = props => {
                 <IconButton color="secondary">
                   <Avatar
                     component="span"
-                    src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
-                    alt="username"
+                    src={props.user.photoURL}
+                    alt={props.user.displayName}
                   />
                 </IconButton>
               </div>

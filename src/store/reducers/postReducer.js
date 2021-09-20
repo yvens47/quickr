@@ -1,5 +1,4 @@
 import { READ_POSTS, ADD_POST } from "../actions/type";
-const dummy = [{ name: "jean" }, { name: "yvens" }];
 
 export default function postReducer(state = [], action) {
   switch (action.type) {
