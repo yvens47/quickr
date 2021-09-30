@@ -8,9 +8,12 @@ const Dialog = props => {
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
     >
-      <div className="modal-dialog  modal-lg">
+      <div className="modal-dialog  modal-lg modal-dialog-centered">
         <div className="modal-content">
-          <div className="modal-header">
+          <div
+            className="modal-header"
+            style={{ background: "#6d6170", color: "white" }}
+          >
             <h5 className="modal-title">Create Post</h5>
             <button
               style={{ color: "#9c27b0" }}

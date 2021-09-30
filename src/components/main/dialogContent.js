@@ -41,16 +41,16 @@ const DialogContent = props => {
                     </Link>
                     <ul className="dropdown dropdown-menu">
                       <li>
-                        <h6 className="dropdown-header">Dropdown header</h6>
+                        <h6 className="dropdown-header">Actions</h6>
                       </li>
                       <li>
                         <a className="dropdown-item" href="#">
-                          Action
+                          Friends
                         </a>
                       </li>
                       <li>
                         <a className="dropdown-item" href="#">
-                          Another action
+                          Public
                         </a>
                       </li>
                     </ul>

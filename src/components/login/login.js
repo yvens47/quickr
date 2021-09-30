@@ -26,7 +26,7 @@ const Login = props => {
   const handleLogin = e => {
     e.preventDefault();
     // login user
-    console.log(account);
+
     props.login(account);
   };
   const handleLoginWithGoogle = e => {

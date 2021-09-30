@@ -23,6 +23,11 @@ import {
 } from "./store/actions/index";
 import { connect } from "react-redux";
 import { useEffect } from "react";
+import OffCanvas from "./components/main/offcanvas";
+import { Avatar } from "@material-ui/core";
+import { IconButton } from "@material-ui/core/";
+import RemoveCircleIcon from "@material-ui/icons/RemoveCircle";
+import PersonAddIcon from "@material-ui/icons/PersonAdd";
 
 function App(props) {
   useEffect(() => {
@@ -82,10 +87,11 @@ function App(props) {
           />
           <Route
             exact
-            path={["/profile"]}
+            path={["/profile/:user"]}
             render={routerProps =>
               props.loggedIn ? (
                 <UserProfile
+                  user={props.user && props.user}
                   logout={logout}
                   loggedIn={props.loggedIn}
                   {...routerProps}
@@ -94,18 +100,49 @@ function App(props) {
                 <Redirect
                   to={{
                     pathname: "/login",
-                    state: { referrer: "/profile" }
+                    state: { referrer: "/profile/:user" }
                   }}
                 />
               )
             }
           />
-          <Route
-            path={["/profile/user"]}
-            render={routerProps => <h2>View so and profile</h2>}
-          />
         </Switch>
       </Router>
+      <OffCanvas title={"friends Request"}>
+        <ul className="list-group">
+          {props.user &&
+            props.user.friendRequests &&
+            props.user.friendRequests.map(user => (
+              <li className="list-group-item shaddow-sm justify-content-between align-items-center">
+                <div className="d-flex align-items-center">
+                  <div className="p-2 d-flex flex-grow-1">
+                    <div>
+                      {" "}
+                      <Avatar src={user.photoURL} />
+                    </div>
+                    <div>
+                      <p> {user.displayName}</p>
+                    </div>
+                  </div>
+
+                  <div className="d-flex justify-content-between">
+                    <div>
+                      <IconButton>
+                        <PersonAddIcon />
+                      </IconButton>
+                    </div>
+                    <div>
+                      <IconButton color="secondary">
+                        {" "}
+                        <RemoveCircleIcon />
+                      </IconButton>
+                    </div>
+                  </div>
+                </div>
+              </li>
+            ))}
+        </ul>
+      </OffCanvas>
     </div>
   );
 }

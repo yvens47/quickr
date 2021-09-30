@@ -8,14 +8,17 @@ import Tab from "@material-ui/core/Tab";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import { IconButton } from "@material-ui/core/";
+
 import EditIcon from "@material-ui/icons/Edit";
 import PhotoCamera from "@material-ui/icons/PhotoCamera";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
 import MailIcon from "@material-ui/icons/Mail";
 import ListIcon from "@material-ui/icons/List";
 import PeopleIcon from "@material-ui/icons/People";
+import NotificationsIcon from "@material-ui/icons/Notifications";
 import SettingsIcon from "@material-ui/icons/Settings";
 import BookmarkIcon from "@material-ui/icons/Bookmark";
+
 import { Link, Redirect } from "react-router-dom";
 // data
 //import { user } from "../../Data/user.js";
@@ -27,12 +30,16 @@ import {
   addPost,
   likePost,
   addComment,
-  suggestedFriends
+  suggestedFriends,
+  friendRequest,
+  getProfile
 } from "../../store/actions/index";
 import FriendLists from "./friendLists";
 import SuggestionsFriends from "./SuggestionsFriends";
 import Test from "./test";
 import { ButtonBase, Button } from "@mui/material";
+import Badge from "@material-ui/core/Badge";
+import { Avatar } from "@material-ui/core";
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -64,18 +71,32 @@ const UserProfile = props => {
   const [value, setValue] = React.useState(0);
 
   useEffect(() => {
-    if (props.user.friends.length == 0) {
-      props.suggestedFriends(10, props.user.uid);
+    if (props.location.state && props.location.state.userid) {
+      props.getProfile(props.location.state.userid, props.match.params.user);
     }
+
+    //if(props.user.uid === props.profile.uid){}
+    // if (props.profile.friends.length == 0) {
+    props.suggestedFriends(10, props.location.state.userid);
+    // }
   }, []);
+  const handleFriendsRequest = (currentUid, profile) => {
+    props.friendRequest(profile, currentUid);
+  };
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-
+  if (!props.location.state) {
+    return <h1>User does not exists</h1>;
+  }
   return (
     <Fragment>
-      <Header loggedIn={props.loggedIn} logout={props.logout} />
+      <Header
+        user={props.user}
+        loggedIn={props.loggedIn}
+        logout={props.logout}
+      />
       <div className="coverpage  py-2 border-top bg-light">
         <div className="container">
           <div className="row justify-content-center">
@@ -89,9 +110,9 @@ const UserProfile = props => {
                         <div className="position-relative">
                           <div className="position-relative">
                             <img
-                              className="p-3"
+                              className=""
                               style={{ width: "100%" }}
-                              src={props.user && props.user.photoURL}
+                              src={props.profile && props.profile.photoURL}
                               alt={props.user.bio}
                             />
                             {/* <IconButton
@@ -102,22 +123,60 @@ const UserProfile = props => {
                               <PhotoCamera />
                             </IconButton> */}
                           </div>
+                          <div className="folow-friends border-top d-flex justify-content-center ">
+                            <div className="followers p-2 aligns-center border-end fw-bold">
+                              {`${props.profile &&
+                                props.profile.followers.length} followers`}
+                            </div>
+                            <div className="friends p-2  fw-bold">
+                              {`${props.profile &&
+                                props.profile.friends.length} Friends`}
+                            </div>
+                          </div>
                         </div>
                       </div>
                       <div className="profile-name">
                         <p className="display-5 text-center ">
-                          {props.user &&
-                            props.user.displayName &&
-                            props.user.displayName}
+                          {props.profile && props.profile.displayName}
                         </p>
                       </div>
                       <div className="followme text-center">
-                        <IconButton color="secondary">
-                          <PersonAddIcon />
-                        </IconButton>
+                        {props.profile && props.profile.uid !== props.user.uid && (
+                          <IconButton
+                            color="secondary"
+                            onClick={() =>
+                              handleFriendsRequest(
+                                props.user.uid,
+                                props.profile
+                              )
+                            }
+                          >
+                            <PersonAddIcon />
+                          </IconButton>
+                        )}
+
                         <IconButton color="success">
                           <MailIcon />
                         </IconButton>
+                        {props.profile && props.profile.uid === props.user.uid && (
+                          <IconButton
+                            color="success"
+                            data-bs-toggle="offcanvas"
+                            data-bs-target="#offcanvasRight"
+                            aria-controls="offcanvasRight"
+                          >
+                            <Badge
+                              badgeContent={
+                                props.profile &&
+                                props.profile.friendRequests &&
+                                props.profile.friendRequests.length
+                              }
+                              color="error"
+                            >
+                              <NotificationsIcon />
+                            </Badge>
+                          </IconButton>
+                        )}
                         {/* <span>Follow Me</span> */}
                       </div>
                       <div className="profile-about">
@@ -177,47 +236,64 @@ const UserProfile = props => {
               </Box>
               <TabPanel value={value} index={0} componnet={"div"}>
                 <div className="myphoto-wrap d-md-flex ">
-                  {props.user.photos.length == 0 && (
-                    <div className="addPhoto">
-                      <div className="row justify-content-start">
-                        <div className="col-12 col-md-12">
-                          <h1 className="display-3">No Photos yet </h1>
-                          <p className="lead">Please Add Photo/Album</p>
-                          <div>
-                            <div className="addPhotoBtn"></div>
-                            <div className="addPhotoBtn"></div>
+                  {props.profile &&
+                    props.profile.photos &&
+                    props.profile.photos.length == 0 && (
+                      <div className="addPhoto">
+                        <div className="row justify-content-start">
+                          <div className="col-12 col-md-12">
+                            <h1 className="display-3">No Photos yet </h1>
+                            <p className="lead">Please Add Photo/Album</p>
+                            <div>
+                              <div className="addPhotoBtn"></div>
+                              <div className="addPhotoBtn"></div>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  )}
-                  {props.user.photos.map(photo => (
-                    <div className="my-photo p-2 m-1  flex-shrink-1 border ">
-                      <img width="100%" src={photo.default} />
-                    </div>
-                  ))}
+                    )}
+                  {props.profile &&
+                    props.profile.photos &&
+                    props.profile.photos.map(photo => (
+                      <div className="my-photo p-2 m-1  flex-shrink-1 border ">
+                        <img width="100%" src={photo.default} />
+                      </div>
+                    ))}
                 </div>
               </TabPanel>
               <TabPanel value={value} index={1}>
                 <div className="profile-friends">
                   <h1 className="display-5">
-                    {props.user.friends.length == 0 && "Suggested Friends"}
+                    {props.profile &&
+                      props.profile.friends &&
+                      props.profile.friends.length == 0 &&
+                      "Suggested Friends"}
 
-                    {props.user.friends.length > 0 &&
-                      `Your Friends ${props.user.friends.length}`}
+                    {props.profile &&
+                      props.profile.friends &&
+                      props.profile.friends.length > 0 &&
+                      `Your Friends ${props.profile.friends.length}`}
                   </h1>
                   <div className="friends-list">
-                    {props.user &&
-                      props.user.friends &&
-                      props.user.friends.length == 0 && (
+                    {props.profile &&
+                      props.profile.friends &&
+                      props.profile.friends.length == 0 && (
                         <div className="row">
                           <SuggestionsFriends
-                            friends={[{ name: "greschen" }, { name: "Gladys" }]}
+                            friends={props.suggestions && props.suggestions}
+                            user={props.user}
+                            friendRequests={handleFriendsRequest}
                           />
                         </div>
                       )}
 
-                    <FriendLists friends={props.user && props.user.friends} />
+                    <FriendLists
+                      friends={
+                        props.profile &&
+                        props.profile.friends &&
+                        props.profile.friends
+                      }
+                    />
                   </div>
                 </div>
               </TabPanel>
@@ -241,6 +317,7 @@ const UserProfile = props => {
           </div>
         </div>
       </div>
+
       <Footer />
     </Fragment>
   );
@@ -250,11 +327,15 @@ function mapStateToProps(state) {
   return {
     loggedIn: state.user.loggedIn,
     user: state.user.user,
-    posts: state.posts.posts
+    posts: state.posts.posts,
+    suggestions: state.user.suggestedFriends,
+    profile: state.profile.user
   };
 }
 export default connect(mapStateToProps, {
   isLoggedIn,
   getPosts,
-  suggestedFriends
+  suggestedFriends,
+  getProfile,
+  friendRequest
 })(UserProfile);

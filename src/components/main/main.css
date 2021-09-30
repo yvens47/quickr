@@ -91,6 +91,7 @@
   height: 100%;
   cursor: pointer;
 }
+
 /* appindex */
 .sidebar-profile .profile {
   z-index: 1;
@@ -115,7 +116,13 @@
   top: 20px;
   left: 10px;
 }
-
+.folow-friends {
+  background: white;
+  height: 45px;
+}
+.comments-likes span {
+  cursor: pointer;
+}
 @media (max-width: 575.98px) {
   .bottomNav {
     display: block;

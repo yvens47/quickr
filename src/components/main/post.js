@@ -16,12 +16,19 @@ import { Avatar, Badge, TextField } from "@material-ui/core";
 // import Stack from "@material-ui/core/Stack";
 import TimeAgo from "react-timeago";
 import { Skeleton } from "@material-ui/core";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import UserHeaderInfo from "./user-header";
 import Lightbox from "react-image-lightbox";
 import "react-image-lightbox/style.css";
 
-const Post = ({ post, like, comment, commentTextChange, commentText }) => {
+const Post = ({
+  post,
+  like,
+  comment,
+  commentTextChange,
+  commentText,
+  history
+}) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isCommentHide, setIsCommentHide] = useState(true);
   const [lightBoxOpen, setLightBoxOpen] = useState(false);
@@ -62,7 +69,10 @@ const Post = ({ post, like, comment, commentTextChange, commentText }) => {
               <div>
                 <IconButton
                   onClick={() =>
-                    alert("view User profile... not yet implemented")
+                    history.push({
+                      pathname: `/profile/${post.user.name}`,
+                      state: { userid: `${post.user.id}` }
+                    })
                   }
                 >
                   <Avatar
@@ -282,4 +292,4 @@ const Post = ({ post, like, comment, commentTextChange, commentText }) => {
   );
 };
 
-export default Post;
+export default withRouter(Post);

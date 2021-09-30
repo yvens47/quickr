@@ -101,6 +101,10 @@ class AppIndexPage extends Component {
     this.setState({ userComment: currentTarget.value });
   };
 
+  handleChangeProfilePic = ({ currentTarget }) => {
+    console.log(currentTarget)
+  };
+
   comment = e => {
     e.preventDefault();
     // add to db
@@ -153,11 +157,16 @@ class AppIndexPage extends Component {
     }
     return (
       <Fragment>
-        <Header loggedIn={this.props.loggedIn} logout={this.props.logout} />
+        <Header
+          user={this.props.user}
+          loggedIn={this.props.loggedIn}
+          logout={this.props.logout}
+        />
         <div className="container-fluid">
           <div className="row py-3   border-bottom justify-content-center p-2 mb-5 ">
             <div className="col-md-3">
               <Sidebar
+                changeDisplay={this.handleChangeProfilePic}
                 display={this.props.user && this.props.user.displayName}
                 profilePic={
                   "https://images.pexels.com/photos/9226524/pexels-photo-9226524.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"

@@ -47,12 +47,15 @@ import {
   COMMENTS,
   COMMENT_ON_POST,
   SUGGESTED_FRIENDS,
-  SUGGESTED_FRIENDS_ERROR
+  SUGGESTED_FRIENDS_ERROR,
+  GET_USER_PROFILE,
+  GET_USER_PROFILE_ERROR
 } from "./type";
 
 import { showToast } from "../../utils/utills";
 
 const DB_COLLECTION_POSTS = "Posts";
+const DB_COLLECTION_USERS = "users";
 const auth = getAuth(app);
 const DB = getFirestore(app);
 
@@ -110,13 +113,13 @@ export function loginWithGoogle() {
         const db = getFirestore(app);
         //const postBucket = "postImages";
         const storage = getStorage(app);
-        const docRef = collection(db, "users");
+        const docRef = collection(db, DB_COLLECTION_USERS);
         const q = query(docRef, where("uid", "==", uid));
         const querySnapshot = await getDocs(q);
         if (querySnapshot.size === 0) {
           // add to users collection
           // Add a new document in collection "cities"
-          await setDoc(doc(db, "users", uid), {
+          await setDoc(doc(db, DB_COLLECTION_USERS, uid), {
             uid,
             email,
             emailVerified,
@@ -126,7 +129,8 @@ export function loginWithGoogle() {
 
             friends: [],
             followers: [],
-            photos: []
+            photos: [],
+            friendRequests: []
           });
         } else {
           dispatch({
@@ -155,12 +159,12 @@ export function loginWithGoogle() {
 export function login(account) {
   return dispatch => {
     const { email, password } = account;
-    console.log("line 17", account);
+
     signInWithEmailAndPassword(auth, email, password)
       .then(async result => {
         const user = result.user;
         const db = getFirestore(app);
-        const docRef = doc(db, "users", `${user.uid}`);
+        const docRef = doc(db, DB_COLLECTION_USERS, `${user.uid}`);
         //console.log(docRef);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
@@ -213,7 +217,8 @@ export function signUp(account) {
           lastLoginAt: Timestamp.now(),
           friends: [],
           followers: [],
-          photos: []
+          photos: [],
+          friendRequests: []
         };
         await setDoc(docRef, userProfile, { merge: true });
         dispatch({ type: SIGN_UP_USER, payload: userProfile });
@@ -269,26 +274,74 @@ export function Friends(userid) {
 export function suggestedFriends(limit, userid) {
   // random show 10 friends to a user that does not have friends yet
   return async dispatch => {
-    const q = query(collection(DB, "users"));
+    const q = query(collection(DB, "users"), where("uid", "!=", userid));
     onSnapshot(
       q,
       querySnapshot => {
         const userList = [];
-        console.log("277", querySnapshot.size);
 
-       
-          querySnapshot.forEach(result => {
-            console.log(result)
-            userList.push({
-             
-              ...result.data()
-              // date: result.data().date.toDate()
-            });
+        querySnapshot.forEach(result => {
+          userList.push({
+            ...result.data()
+            // date: result.data().date.toDate()
           });
-          dispatch({ type: SUGGESTED_FRIENDS, payload: userList });
-        
+        });
+        dispatch({ type: SUGGESTED_FRIENDS, payload: userList });
       },
       error => dispatch({ type: SUGGESTED_FRIENDS_ERROR, payload: error })
+    );
+  };
+}
+export function friendRequest(profile, currentUid) {
+  return async dispatch => {
+    try {
+      console.log(profile);
+      const { displayName, email, uid, photoURL } = profile;
+      const user = { displayName, email, uid, photoURL };
+      const docRef = doc(DB, DB_COLLECTION_USERS, currentUid);
+      //check if user already like the post if so dislike
+      /*********** dislike the post */
+
+      //if not likes the post
+      updateDoc(docRef, { friendRequests: arrayUnion(user) }, d => {
+        console.log("successfully updated");
+      });
+      /***********like the post */
+      dispatch({ type: "FRIEND_REQUESTED" });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+}
+
+/***********************************
+ * Profile
+ ***********************************/
+
+export function getProfile(userid, displayName) {
+  return dispatch => {
+    const q = query(
+      collection(DB, "users"),
+      where("uid", "==", userid)
+      //where("displayName", "==", displayName)
+    );
+    onSnapshot(
+      q,
+      querySnapshot => {
+        const data = [];
+        querySnapshot.forEach(doc => {
+          data.push({
+            // id: doc.id,
+            ...doc.data()
+            // date: doc.data().date.toDate()
+          });
+        });
+        dispatch({
+          type: GET_USER_PROFILE,
+          payload: data[0]
+        });
+      },
+      error => dispatch({ type: GET_USER_PROFILE_ERROR, payload: error })
     );
   };
 }
