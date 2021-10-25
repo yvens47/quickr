@@ -18,8 +18,8 @@ import PeopleIcon from "@material-ui/icons/People";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import SettingsIcon from "@material-ui/icons/Settings";
 import BookmarkIcon from "@material-ui/icons/Bookmark";
-
 import { Link, Redirect } from "react-router-dom";
+import Radio from "@material-ui/core/Radio";
 // data
 //import { user } from "../../Data/user.js";
 import { connect } from "react-redux";
@@ -40,6 +40,7 @@ import Test from "./test";
 import { ButtonBase, Button } from "@mui/material";
 import Badge from "@material-ui/core/Badge";
 import { Avatar } from "@material-ui/core";
+import Dialog from "./Dialog";
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -47,12 +48,12 @@ function TabPanel(props) {
     <div
       role="tabpanel"
       hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
+      id={`vertical-tabpanel-${index}`}
+      aria-labelledby={`vertical-tab-${index}`}
       {...other}
     >
       {value === index && (
-        <Box sx={{ p: 3 }}>
+        <Box component="div">
           <Typography>{children}</Typography>
         </Box>
       )}
@@ -62,8 +63,8 @@ function TabPanel(props) {
 
 function a11yProps(index) {
   return {
-    id: `simple-tab-${index}`,
-    "aria-controls": `simple-tabpanel-${index}`
+    id: `vertical-tab-${index}`,
+    "aria-controls": `vertical-tabpanel-${index}`
   };
 }
 
@@ -73,11 +74,12 @@ const UserProfile = props => {
   useEffect(() => {
     if (props.location.state && props.location.state.userid) {
       props.getProfile(props.location.state.userid, props.match.params.user);
+      props.suggestedFriends(10, props.location.state.userid);
+    } else {
+      alert("hello wor;d");
+      <Redirect to="/home" />;
     }
 
-    //if(props.user.uid === props.profile.uid){}
-    // if (props.profile.friends.length == 0) {
-    props.suggestedFriends(10, props.location.state.userid);
     // }
   }, []);
   const handleFriendsRequest = (currentUid, profile) => {
@@ -87,9 +89,20 @@ const UserProfile = props => {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-  if (!props.location.state) {
-    return <h1>User does not exists</h1>;
+  if (!props.loggedIn) {
+    // Redirect
+    return (
+      <Redirect
+        to={{
+          pathname: "/login",
+          state: {
+            referrer: `profile/${props.profile && props.profile.displayName}`
+          }
+        }}
+      />
+    );
   }
+
   return (
     <Fragment>
       <Header
@@ -104,24 +117,42 @@ const UserProfile = props => {
               <div className="container">
                 <div className="row justify-content-center">
                   <div className="col-md-6">
-                    {" "}
                     <div className="profile-pic-wrap d-flex flex-column">
                       <div className="profile-pic  aligns-center position-relative">
                         <div className="position-relative">
-                          <div className="position-relative">
-                            <img
-                              className=""
-                              style={{ width: "100%" }}
-                              src={props.profile && props.profile.photoURL}
-                              alt={props.user.bio}
-                            />
-                            {/* <IconButton
-                              className="changeProfile"
-                              size={"large"}
-                              color="info"
+                          <div className="profile position-relative top-0 start-0 ">
+                            <div className="edit-icon position-absolute">
+                              {props.profile &&
+                                props.profile.uid === props.user.uid && (
+                                  <IconButton
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#exampleModal"
+                                    color="primary"
+                                    component="div"
+                                  >
+                                    <PhotoCamera fontSize="large" />
+                                  </IconButton>
+                                )}
+                            </div>
+
+                            <Link
+                              to={{
+                                pathname: `/profile/${props.profile.displayName}`,
+                                state: { userid: props.profile.uid }
+                              }}
                             >
-                              <PhotoCamera />
-                            </IconButton> */}
+                              <img
+                                className=""
+                                style={{
+                                  width: "100%",
+                                  boxShadow: "1px 1px 10px #9d9d9d"
+                                }}
+                                src={props.profile && props.profile.photoURL}
+                                alt={props.user.bio}
+                              />
+                            </Link>
+
+                            <div></div>
                           </div>
                           <div className="folow-friends border-top d-flex justify-content-center ">
                             <div className="followers p-2 aligns-center border-end fw-bold">
@@ -201,14 +232,16 @@ const UserProfile = props => {
       <div className="container-fluid">
         <div className="row justify-content-center">
           <div className="col-md-8 mt-2">
-            <Box sx={{ width: "100%" }}>
+            <Box sx={{ width: "100%" }} component="div">
               <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                 <Tabs
                   centered
                   scrollButtons="on"
                   value={value}
                   onChange={handleChange}
-                  aria-label="basic tabs example"
+                  variant="scrollable"
+                  scrollButtons="auto"
+                  aria-label="scrollable auto tabs example"
                 >
                   <Tab
                     icon={<PhotoCamera />}
@@ -235,30 +268,32 @@ const UserProfile = props => {
                 </Tabs>
               </Box>
               <TabPanel value={value} index={0} componnet={"div"}>
-                <div className="myphoto-wrap d-md-flex ">
-                  {props.profile &&
-                    props.profile.photos &&
-                    props.profile.photos.length == 0 && (
-                      <div className="addPhoto">
-                        <div className="row justify-content-start">
-                          <div className="col-12 col-md-12">
-                            <h1 className="display-3">No Photos yet </h1>
-                            <p className="lead">Please Add Photo/Album</p>
-                            <div>
-                              <div className="addPhotoBtn"></div>
-                              <div className="addPhotoBtn"></div>
+                <div className="container-fluid">
+                  <div className="myphoto-wrap row d-md-flex mt-2 ">
+                    {props.profile &&
+                      props.profile.photos &&
+                      props.profile.photos.length == 0 && (
+                        <div className="addPhoto">
+                          <div className="row py-2 justify-content-start">
+                            <div className="col-12 col-md-12">
+                              <h1 className="display-3">No Photos yet </h1>
+                              <p className="lead">Please Add Photo/Album</p>
+                              <div>
+                                <div className="addPhotoBtn"></div>
+                                <div className="addPhotoBtn"></div>
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    )}
-                  {props.profile &&
-                    props.profile.photos &&
-                    props.profile.photos.map(photo => (
-                      <div className="my-photo p-2 m-1  flex-shrink-1 border ">
-                        <img width="100%" src={photo.default} />
-                      </div>
-                    ))}
+                      )}
+                    {props.profile &&
+                      props.profile.photos &&
+                      props.profile.photos.map(photo => (
+                        <div className="my-photo  flex-shrink-1 border col-md-4 offset-0 p-0 ">
+                          <img width="100%" height="100%" src={photo.url} />
+                        </div>
+                      ))}
+                  </div>
                 </div>
               </TabPanel>
               <TabPanel value={value} index={1}>
@@ -317,6 +352,26 @@ const UserProfile = props => {
           </div>
         </div>
       </div>
+      {/* Dialog content */}
+      <Dialog title="Upload/Choose photo">
+        {/* photos */}
+        <div className="d-flex flex-row justify-content-between flex-wrap">
+          {props.profile.photos.map(photo => (
+            <div key={photo.url} className="m-1" style={{ width: "200px" }}>
+              <label>
+                <input
+                  onChange={e => alert("JSON.stringify(currentTarget.value)")}
+                  type="radio"
+                  name="test"
+                  value={photo}
+                  checked
+                />
+                <img src={photo.url} width="10%" />
+              </label>
+            </div>
+          ))}
+        </div>
+      </Dialog>
 
       <Footer />
     </Fragment>

@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import React, { Fragment } from "react";
 
 import { Skeleton } from "@material-ui/core";
 import PostSkeleton from "./postSkeleton";

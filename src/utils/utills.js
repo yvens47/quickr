@@ -1,11 +1,10 @@
 import { toast } from "react-toastify";
 
 export function showToast(msg, type) {
-  alert(type);
   if (type === "error") {
     toast.error(msg, {
       position: "top-right",
-      autoClose: 2300,
+      autoClose: 1300,
       hideProgressBar: false,
       closeOnClick: true,
       pauseOnHover: false,
@@ -15,7 +14,7 @@ export function showToast(msg, type) {
   } else if (type === "success")
     toast.success(msg, {
       position: "top-right",
-      autoClose: 2300,
+      autoClose: 1300,
       hideProgressBar: true,
       closeOnClick: true,
       pauseOnHover: false,
@@ -25,7 +24,7 @@ export function showToast(msg, type) {
   else if (type === "info")
     toast.info(msg, {
       position: "top-right",
-      autoClose: 2300,
+      autoClose: 1300,
       hideProgressBar: false,
       closeOnClick: true,
       pauseOnHover: false,
@@ -35,7 +34,7 @@ export function showToast(msg, type) {
   else if (type === "warn") {
     toast.warn(msg, {
       position: "top-right",
-      autoClose: 2300,
+      autoClose: 1300,
       hideProgressBar: false,
       closeOnClick: true,
       pauseOnHover: false,
@@ -45,7 +44,7 @@ export function showToast(msg, type) {
   } else {
     toast(msg, {
       position: "top-right",
-      autoClose: 2300,
+      autoClose: 1300,
       hideProgressBar: false,
       closeOnClick: true,
       pauseOnHover: false,

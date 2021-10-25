@@ -8,7 +8,7 @@ import EmojiEmotionsIcon from "@material-ui/icons/EmojiEmotions";
 import GroupsRoundedIcon from "@material-ui/icons/GroupsRounded";
 import Button from "@material-ui/core/Button";
 import CloseIcon from "@material-ui/icons/Close";
-import { useState } from "react";
+import React, { useState } from "react";
 const DialogContent = props => {
   const [media, setMedia] = useState(false);
 

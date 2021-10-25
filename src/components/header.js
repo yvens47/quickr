@@ -1,23 +1,37 @@
+import React from 'react'
 import { Link } from "react-router-dom";
 
-import { useEffect } from "react";
+import { useEffect, useState, createRef, Fragment } from "react";
 
 import IconButton from "@material-ui/core/IconButton";
 import Badge from "@material-ui/core/Badge";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import { Avatar } from "@material-ui/core";
 const Header = props => {
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll, true);
+  }, []);
+
+  const handleScroll = e => {
+    setScrolled(true);
+  };
+
   return (
     <nav
-      style={{ backgroundColor: "#8215953d" }}
+      style={{ backgroundColor: "rgb(69, 107, 162)" }}
       class={
-        props.scrolled
+        scrolled
           ? `navbar navbar-expand-lg navbar-dark fixed-top shaddow `
           : "navbar navbar-expand-lg navbar-light shaddow "
       }
     >
       <div className="container-fluid">
-        <Link class="navbar-brand fw-bold " to="/" style={{ color: "#9c27b0" }}>
+        <Link
+          class="navbar-brand fw-bold "
+          to="/"
+          style={{ color: "rgb(225, 223, 225)" }}
+        >
           Quickr
         </Link>
         <button
@@ -42,19 +56,7 @@ const Header = props => {
           </form>
 
           {props.loggedIn ? (
-            <>
-              <IconButton>
-                <Badge
-                  data-bs-toggle="offcanvas"
-                  data-bs-target="#offcanvasRight"
-                  aria-controls="offcanvasRight"
-                  badgeContent={props.user && props.user.friendRequests.length}
-                  color="error"
-                >
-                  <NotificationsIcon />
-                </Badge>
-              </IconButton>
-
+            <Fragment>
               <div className="dropdown text-end">
                 <Link
                   href="#"
@@ -115,7 +117,7 @@ const Header = props => {
                   </li>
                 </ul>
               </div>
-            </>
+            </Fragment>
           ) : (
             <ul className="nav  justify-content-end">
               <li>

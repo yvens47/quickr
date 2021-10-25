@@ -1,3 +1,4 @@
+import React from 'react';
 const Dialog = props => {
   return (
     <div
@@ -14,7 +15,7 @@ const Dialog = props => {
             className="modal-header"
             style={{ background: "#6d6170", color: "white" }}
           >
-            <h5 className="modal-title">Create Post</h5>
+            <h5 className="modal-title">{props.title}</h5>
             <button
               style={{ color: "#9c27b0" }}
               type="button"

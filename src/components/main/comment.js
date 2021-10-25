@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import TimeAgo from "react-timeago";
 import UserHeaderInfo from "./user-header";
 import TextField from "@material-ui/core/TextField";
@@ -13,10 +13,7 @@ const Comment = ({ comment }) => {
     }
   };
 
-  const handleCommentReply = comment => {
-
-    
-  };
+  const handleCommentReply = comment => {};
 
   return (
     <div className="d-flex mt-2">

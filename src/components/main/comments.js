@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import React, { Fragment, useState } from "react";
 import Comment from "./comment";
 const Comments = ({ comments, filter, commentTextChange }) => {
   const [slice, setSlice] = useState({ start: 0, end: 20 });

@@ -1,3 +1,4 @@
+import React from 'react';
 import { IconButton } from "@material-ui/core/";
 import CameraAltIcon from "@material-ui/icons/CameraAlt";
 import HomeIcon from "@material-ui/icons/Home";
@@ -7,31 +8,37 @@ import BookmarksIcon from "@material-ui/icons/Bookmarks";
 import Button from "@material-ui/core/Button";
 
 import { Link } from "react-router-dom";
+import { Skeleton } from "@mui/material";
 
 const Sidebar = props => {
-  const handleChangeDisplay = ({ currentTarget }) => {
-    if (currentTarget.files !== null) {
-      for (const file of currentTarget.files) {
-        console.log(URL.createObjectURL(file));
-      }
-    }
-  };
   return (
     <div className="sidebar-main d-flex flex-column d-none d-md-block ">
       <div class="d-flex flex-column flex-shrink-0 p-2 bg-light">
-        <div className="sidebar-profile position-relative ">
+        <div className="sidebar-profile  ">
           <div className="profile position-relative top-0 start-0 ">
-            <Link to="/profile">
-              <img
-                className="border  position-absolute top-0 start-0 rounded"
-                src={props.profilePic}
-                style={{ width: "100%", height: "100%;" }}
-              />
+            <Link
+              to={{
+                pathname: `/profile/${props.display}`,
+                state: { userid: props.user.uid }
+              }}
+            >
+              {!props.profilePic ? (
+                <Skeleton
+                  className="border  position-absolute top-0 start-0 rounded"
+                  style={{ width: "100%", height: "190px" }}
+                />
+              ) : (
+                <img
+                  className="border  position-absolute top-0 start-0 rounded"
+                  src={props.profilePic}
+                  style={{ width: "100%", height: "100%", padding: "10px" }}
+                />
+              )}
             </Link>
 
             <div className="edit-icon position-absolute">
               <input
-                onChange={handleChangeDisplay}
+                onChange={props.changeDisplay}
                 style={{ display: "none" }}
                 accept="image/*"
                 id="contained-button-file"

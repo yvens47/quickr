@@ -1,4 +1,4 @@
-import { Component, Fragment, createRef } from "react";
+import React,{ Component, Fragment, createRef } from "react";
 import { Redirect } from "react-router-dom";
 
 import "./main.css";
@@ -23,7 +23,10 @@ import {
   getPosts,
   addPost,
   likePost,
-  addComment
+  deleteUserPost,
+  changeProfile,
+  addComment,
+  getProfile
 } from "../../store/actions/index";
 
 import Sidebar from "./sidebar";
@@ -65,6 +68,7 @@ class AppIndexPage extends Component {
     this.props.isLoggedIn();
     if (this.props.loggedIn) {
       this.props.getPosts();
+      this.props.getProfile(this.props.user.uid, this.props.user.displayName);
     }
   };
   handleClickOpen = e => {
@@ -102,7 +106,13 @@ class AppIndexPage extends Component {
   };
 
   handleChangeProfilePic = ({ currentTarget }) => {
-    console.log(currentTarget)
+    const user = this.props.user;
+    if (currentTarget.files !== null) {
+      for (const file of currentTarget.files) {
+        this.props.changeProfile(user, file);
+      }
+      // this.props.getProfile(this.props.user.uid, this.props.user.displayName);
+    }
   };
 
   comment = e => {
@@ -141,6 +151,10 @@ class AppIndexPage extends Component {
     };
     this.setState({ userPost: postCopy });
   };
+  // delete user posted post
+  deleteUserPost = (postId, userId) => {
+    this.props.deleteUserPost(postId, userId);
+  };
 
   render() {
     if (!this.props.loggedIn) {
@@ -149,7 +163,6 @@ class AppIndexPage extends Component {
         <Redirect
           to={{
             pathname: "/login",
-
             state: { referrer: "/home" }
           }}
         />
@@ -164,17 +177,20 @@ class AppIndexPage extends Component {
         />
         <div className="container-fluid">
           <div className="row py-3   border-bottom justify-content-center p-2 mb-5 ">
-            <div className="col-md-3">
+            <div className="col-md-2">
               <Sidebar
                 changeDisplay={this.handleChangeProfilePic}
                 display={this.props.user && this.props.user.displayName}
+                user={this.props.user && this.props.user}
                 profilePic={
-                  "https://images.pexels.com/photos/9226524/pexels-photo-9226524.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+                  this.props.profile &&
+                  this.props.profile.user &&
+                  this.props.profile.user.photoURL
                 }
               />
             </div>
             {/* Main content */}
-            <div className="col-md-6 app-contents">
+            <div className="col-md-7 app-contents">
               <div
                 className=" post-media-content-wrapper border   p-3 d-flex flex-column rounded
               
@@ -245,6 +261,8 @@ class AppIndexPage extends Component {
                 </div>
               </div>
               <Posts
+                deleteUserPost={this.deleteUserPost}
+                user={this.props.user}
                 commentText={this.state.userComment}
                 commentTextChange={this.commentTextChange}
                 comment={this.comment}
@@ -262,7 +280,7 @@ class AppIndexPage extends Component {
           </div>
         </div>
 
-        <Dialog type={this.state.type}>
+        <Dialog type={this.state.type} title="Create Post">
           <DialogContent
             type={this.state.type}
             handlePostOption={this.handlePostOption}
@@ -289,7 +307,8 @@ function mapStateToProps(state) {
   return {
     loggedIn: state.user.loggedIn,
     user: state.user.user,
-    posts: state.posts.posts
+    posts: state.posts.posts,
+    profile: state.profile
   };
 }
 export default connect(mapStateToProps, {
@@ -297,6 +316,9 @@ export default connect(mapStateToProps, {
   getPosts,
   addPost,
   likePost,
+  deleteUserPost,
   addComment,
-  logOut
+  changeProfile,
+  logOut,
+  getProfile
 })(AppIndexPage);

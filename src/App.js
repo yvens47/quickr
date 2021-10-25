@@ -1,3 +1,4 @@
+import React from "react";
 import "./App.css";
 import IndexPage from "./components/home/IndexPage";
 import Login from "./components/login/login";
@@ -35,9 +36,7 @@ function App(props) {
   }, []);
   const logout = e => {
     e.preventDefault();
-
     props.logOut();
-    //props.isLoggedIn();
   };
   return (
     <div className="App">
@@ -87,24 +86,27 @@ function App(props) {
           />
           <Route
             exact
+            path={["/profile"]}
+            render={routerProps => (
+              <UserProfile
+                user={props.user && props.user}
+                logout={logout}
+                loggedIn={props.loggedIn}
+                {...routerProps}
+              />
+            )}
+          />
+          <Route
+            exact
             path={["/profile/:user"]}
-            render={routerProps =>
-              props.loggedIn ? (
-                <UserProfile
-                  user={props.user && props.user}
-                  logout={logout}
-                  loggedIn={props.loggedIn}
-                  {...routerProps}
-                />
-              ) : (
-                <Redirect
-                  to={{
-                    pathname: "/login",
-                    state: { referrer: "/profile/:user" }
-                  }}
-                />
-              )
-            }
+            render={routerProps => (
+              <UserProfile
+                user={props.user && props.user}
+                logout={logout}
+                loggedIn={props.loggedIn}
+                {...routerProps}
+              />
+            )}
           />
         </Switch>
       </Router>

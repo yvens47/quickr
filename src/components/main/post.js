@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React,{ useState, Fragment } from "react";
 
 import { styled } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
@@ -20,14 +20,16 @@ import { Link, withRouter } from "react-router-dom";
 import UserHeaderInfo from "./user-header";
 import Lightbox from "react-image-lightbox";
 import "react-image-lightbox/style.css";
-
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 const Post = ({
   post,
   like,
   comment,
   commentTextChange,
   commentText,
-  history
+  history,
+  user,
+  deleteUserPost
 }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isCommentHide, setIsCommentHide] = useState(true);
@@ -90,11 +92,44 @@ const Post = ({
                   <TimeAgo date={post.date} />
                 </div>
               </div>
+              {post.user.id === user.uid && (
+                <div className="postEditActions flex-grow-1 d-flex justify-content-end align-items-center">
+                  <div className="dropdown">
+                    <Button
+                      type="button"
+                      id="dropdownMenuButton1"
+                      data-bs-toggle="dropdown"
+                      ariaExpanded="false"
+                      className="btn btn-primary "
+                    >
+                      <MoreVertIcon />
+                    </Button>
+                    <ul
+                      className="dropdown-menu"
+                      aria-labelledby="dropdownMenuButton1"
+                    >
+                      <li>
+                        <a className="dropdown-item" href="#">
+                          Edit
+                        </a>
+                      </li>
+                      <li>
+                        <button
+                          onClick={() => deleteUserPost(post.id, user.uid)}
+                          className="dropdown-item"
+                        >
+                          delete
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
           {post.postType === "video" && (
-            <>
+            <Fragment>
               <h5 className="card-title post-head">{post.description}</h5>
               <video
                 controls
@@ -108,11 +143,11 @@ const Post = ({
                 <source src={post.videos} type="video/webm" />
                 Sorry, your browser doesn't support embedded videos.
               </video>
-            </>
+            </Fragment>
           )}
 
           {post.postType === "photo" && (
-            <>
+            <Fragment>
               <h5 className="card-title post-head lead ">{post.description}</h5>
               <div
                 className="post-photo-wrapper"
@@ -159,7 +194,7 @@ const Post = ({
                   />
                 )}
               </div>
-            </>
+            </Fragment>
           )}
           {post.postType === "post" && (
             <div className="post-text" style={{ position: "relative" }}>

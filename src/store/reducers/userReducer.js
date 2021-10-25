@@ -6,7 +6,8 @@ import {
   SIGN_UP_USER_ERROR,
   SIGN_OUT_USER,
   SUGGESTED_FRIENDS,
-  SUGGESTED_FRIENDS_ERROR
+  SUGGESTED_FRIENDS_ERROR,
+  CHANGE_PROFILE
 } from "../actions/type";
 // const GET_USER = "GET_USER";
 // const IS_LOGIN = "IS_LOGGED_IN";
@@ -30,6 +31,7 @@ export default function userReducer(state = {}, action) {
       return { ...state, error: action.payload, loggedIn: false };
     case SIGN_OUT_USER:
       return { ...state, user: action.payload, loggedIn: false };
+
     case SUGGESTED_FRIENDS:
       return { ...state, suggestedFriends: action.payload };
 

@@ -1,4 +1,4 @@
-import { Fragment, useEffect } from "react";
+import React, { Fragment, useEffect } from "react";
 import Header from "../header";
 import Footer from "../footer";
 import "./home.css";

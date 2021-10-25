@@ -1,3 +1,4 @@
+import React from "react";
 const Cols = ({ cssClasses, image, size }) => {
   return (
     <div className={cssClasses}>

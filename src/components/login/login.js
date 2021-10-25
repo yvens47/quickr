@@ -1,4 +1,5 @@
-import { Fragment, useState, useEffect } from "react";
+
+import React, { Fragment, useState, useEffect } from "react";
 import Header from "../header";
 import Footer from "../footer";
 import { Link, Redirect } from "react-router-dom";
@@ -16,7 +17,17 @@ const Login = props => {
 
   if (props.loggedIn) {
     // redirect with flash message
-    return <Redirect to={props.location.state.referrer} />;
+    return (
+      <Redirect
+        to={{
+          pathname: "home",
+
+          state: {
+            userid: props.user.uid
+          }
+        }}
+      />
+    );
   }
   const handleChange = ({ currentTarget }) => {
     const accountCopy = { ...account };
@@ -120,7 +131,8 @@ const Login = props => {
 };
 function mapStateToProps(state) {
   return {
-    loggedIn: state.user.loggedIn
+    loggedIn: state.user.loggedIn,
+    user: state.user
   };
 }
 export default connect(mapStateToProps, { loginWithGoogle, login })(Login);

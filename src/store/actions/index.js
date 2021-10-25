@@ -29,9 +29,16 @@ import {
   Timestamp,
   collectionGroup,
   Query,
-  where
+  where,
+  deleteDoc
 } from "firebase/firestore";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject
+} from "firebase/storage";
 import {
   GET_USER,
   IS_LOGIN,
@@ -49,7 +56,9 @@ import {
   SUGGESTED_FRIENDS,
   SUGGESTED_FRIENDS_ERROR,
   GET_USER_PROFILE,
-  GET_USER_PROFILE_ERROR
+  GET_USER_PROFILE_ERROR,
+  CHANGE_PROFILE,
+  DELETE_USER_POST
 } from "./type";
 
 import { showToast } from "../../utils/utills";
@@ -71,7 +80,7 @@ export function isLoggedIn() {
         const { uid } = user;
         const db = getFirestore(app);
         //const postBucket = "postImages";
-        const docRef = collection(db, "users");
+        const docRef = collection(db, DB_COLLECTION_USERS);
         const q = query(docRef, where("uid", "==", uid));
         const querySnapshot = await getDocs(q);
         if (querySnapshot.size > 0) {
@@ -205,7 +214,7 @@ export function signUp(account) {
         const db = getFirestore(app);
         //const postBucket = "postImages";
         const storage = getStorage(app);
-        const docRef = doc(db, "users", uid);
+        const docRef = doc(db, DB_COLLECTION_USERS, uid);
         const userProfile = {
           uid,
           email,
@@ -274,7 +283,10 @@ export function Friends(userid) {
 export function suggestedFriends(limit, userid) {
   // random show 10 friends to a user that does not have friends yet
   return async dispatch => {
-    const q = query(collection(DB, "users"), where("uid", "!=", userid));
+    const q = query(
+      collection(DB, DB_COLLECTION_USERS),
+      where("uid", "!=", userid)
+    );
     onSnapshot(
       q,
       querySnapshot => {
@@ -321,7 +333,7 @@ export function friendRequest(profile, currentUid) {
 export function getProfile(userid, displayName) {
   return dispatch => {
     const q = query(
-      collection(DB, "users"),
+      collection(DB, DB_COLLECTION_USERS),
       where("uid", "==", userid)
       //where("displayName", "==", displayName)
     );
@@ -330,6 +342,7 @@ export function getProfile(userid, displayName) {
       querySnapshot => {
         const data = [];
         querySnapshot.forEach(doc => {
+          console.log(doc);
           data.push({
             // id: doc.id,
             ...doc.data()
@@ -345,6 +358,24 @@ export function getProfile(userid, displayName) {
     );
   };
 }
+export function changeProfile(user, image) {
+  return async dispatch => {
+    const db = getFirestore(app);
+    const docRef = doc(db, DB_COLLECTION_USERS, user.uid);
+
+    const storage = getStorage(app);
+    const storageRef = ref(storage, `${DB_COLLECTION_USERS}/${image.name}`);
+    const upload = await uploadBytes(storageRef, image, image);
+    const url = await getDownloadURL(ref(storage, storageRef));
+    const imageData = { url: url, name: image.name };
+
+    updateDoc(docRef, { photoURL: url, photos: arrayUnion(imageData) });
+    console.log(docRef);
+    const docData = await getDoc(docRef);
+    /***********like the post */
+    dispatch({ type: CHANGE_PROFILE, payload: docData.data() });
+  };
+}
 
 /************************************
  *         Posts Actions here       *
@@ -353,7 +384,10 @@ export function getProfile(userid, displayName) {
 export function getPosts(start, limit) {
   return async dispatch => {
     const db = getFirestore(app);
-    const q = query(collection(db, "Posts"), orderBy("date", "desc"));
+    const q = query(
+      collection(db, DB_COLLECTION_POSTS),
+      orderBy("date", "desc")
+    );
 
     onSnapshot(
       q,
@@ -375,7 +409,7 @@ export function getPosts(start, limit) {
   };
 }
 
-//not yet implemented
+// to be refactored
 export function addPost(post, postType, file) {
   return async dispatch => {
     const db = getFirestore(app);
@@ -388,11 +422,12 @@ export function addPost(post, postType, file) {
     if (postType === "photo") {
       for (var i = 0; i < file.length; i++) {
         const photo = file.item(i);
-        const storageRef = ref(storage, `postImages/${photo.name}`);
+        const storageRef = ref(storage, `media/${photo.name}`);
         const upload = await uploadBytes(storageRef, photo, photo);
         const url = await getDownloadURL(ref(storage, storageRef));
         post.photos.push(url);
         post.image = post.photos[0];
+        post.photoName = photo.name;
       }
       post.date = Timestamp.now();
 
@@ -411,7 +446,7 @@ export function addPost(post, postType, file) {
     } else if (postType === "video") {
       for (var i = 0; i < file.length; i++) {
         const photo = file.item(i);
-        const storageRef = ref(storage, `postVideos/${photo.name}`);
+        const storageRef = ref(storage, `media/${photo.name}`);
         const upload = await uploadBytes(storageRef, photo, photo);
         const url = await getDownloadURL(ref(storage, storageRef));
         post.videos.push(url);
@@ -421,7 +456,6 @@ export function addPost(post, postType, file) {
       post.video = post.videos[0];
       post.date = Timestamp.now();
 
-      console.log("line 275", post);
       const docRef = addDoc(
         collection(db, DB_COLLECTION_POSTS),
         post,
@@ -444,6 +478,31 @@ export function addPost(post, postType, file) {
         payload: `Document written with ID:  ${docRef.id}`
       });
     }
+  };
+}
+
+export function deleteUserPost(postId, userId) {
+  return async dispatch => {
+    const db = getFirestore(app);
+    const d = doc(db, DB_COLLECTION_POSTS, postId);
+    const docRef = await getDoc(d);
+
+    // delete media associtated with the post from the storage
+    const { photoName } = docRef.data();
+    const storage = getStorage();
+    // Create a reference to the file to delete
+    const desertRef = ref(storage, `media/${photoName}`);
+    // Delete the file
+    deleteObject(desertRef)
+      .then(() => {
+        // File deleted successfully
+        deleteDoc(d);
+        dispatch({ type: DELETE_USER_POST });
+        showToast("Post is deleted", "info");
+      })
+      .catch(error => {
+        showToast("unable to delete image", "error");
+      });
   };
 }
 //not yet implemented
@@ -477,6 +536,7 @@ export function addComment(postId, comment) {
     const db = getFirestore(app);
     const docRef = doc(db, DB_COLLECTION_POSTS, `${postId}`); //console.log(docRef);
     const docSnap = await getDoc(docRef);
+
     if (docSnap.exists()) {
       if (
         docSnap.get("comments").filter(e => e.uid === comment.uid).length > 0
