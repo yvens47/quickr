@@ -1,4 +1,4 @@
-import React,{ useState, Fragment } from "react";
+import React, { useState, Fragment } from "react";
 
 import { styled } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
@@ -177,15 +177,15 @@ const Post = ({
                     nextSrc={post.photos[(photoIndex + 1) % post.photos.length]}
                     prevSrc={
                       post.photos[
-                        (photoIndex + post.photos.length - 1) %
-                          post.photos.length
+                      (photoIndex + post.photos.length - 1) %
+                      post.photos.length
                       ]
                     }
                     onCloseRequest={() => setLightBoxOpen(false)}
                     onMovePrevRequest={() =>
                       setPhotoIndex(
                         (photoIndex + post.photos.length - 1) %
-                          post.photos.length
+                        post.photos.length
                       )
                     }
                     onMoveNextRequest={() =>
@@ -226,7 +226,7 @@ const Post = ({
                   data-type={post.postId}
                   onClick={showComment}
                 >
-                  <Badge badgeContent={post.comments.length} color="action">
+                  <Badge badgeContent={post && post.comments && post.comments.length} color="action">
                     <CommentIcon />
                   </Badge>
                 </IconButton>

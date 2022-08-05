@@ -11,19 +11,25 @@ const Header = props => {
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
     window.addEventListener("scroll", handleScroll, true);
-  }, []);
+
+    return function cleanUp() {
+      window.removeEventListener('scroll', handleScroll, true)
+
+    }
+  });
 
   const handleScroll = e => {
+
     setScrolled(true);
   };
 
   return (
     <nav
-      style={{ backgroundColor: "rgb(69, 107, 162)" }}
-      class={
-        scrolled
-          ? `navbar navbar-expand-lg navbar-dark fixed-top shaddow `
-          : "navbar navbar-expand-lg navbar-light shaddow "
+      style={{ backgroundColor: "rgb(69, 107, 162)", }}
+      className={
+
+        `navbar navbar-expand-lg navbar-dark fixed-top `
+
       }
     >
       <div className="container-fluid">

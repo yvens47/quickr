@@ -1,4 +1,4 @@
-import React,{ Component, Fragment, createRef } from "react";
+import React, { Component, Fragment, createRef } from "react";
 import { Redirect } from "react-router-dom";
 
 import "./main.css";
@@ -175,129 +175,145 @@ class AppIndexPage extends Component {
           loggedIn={this.props.loggedIn}
           logout={this.props.logout}
         />
-        <div className="container-fluid">
-          <div className="row py-3   border-bottom justify-content-center p-2 mb-5 ">
-            <div className="col-md-2">
-              <Sidebar
-                changeDisplay={this.handleChangeProfilePic}
-                display={this.props.user && this.props.user.displayName}
-                user={this.props.user && this.props.user}
-                profilePic={
-                  this.props.profile &&
-                  this.props.profile.user &&
-                  this.props.profile.user.photoURL
-                }
-              />
-            </div>
-            {/* Main content */}
-            <div className="col-md-7 app-contents">
-              <div
-                className=" post-media-content-wrapper border   p-3 d-flex flex-column rounded
+
+        <div style={{ paddingTop: ' 80px' }} className="wrapAll">
+          <div className="container-fluid">
+            <div className="row py-3   border-bottom justify-content-center p-2 mb-5 ">
+              <div className="col-md-2">
+                <Sidebar
+                  changeDisplay={this.handleChangeProfilePic}
+                  display={this.props.user && this.props.user.displayName}
+                  user={this.props.user && this.props.user}
+                  profilePic={
+                    this.props.profile &&
+                    this.props.profile.user &&
+                    this.props.profile.user.photoURL
+                  }
+                />
+              </div>
+              {/* Main content */}
+              <div className="col-md-7 app-contents">
+                <div
+                  className=" post-media-content-wrapper border   p-3 d-flex flex-column rounded
               
               "
-                style={{ background: "white" }}
-              >
-                <div className="mb-3 d-flex ">
-                  <span className="align-self-center mr-2">
-                    <Avatar src={this.props.user.photoURL} />
-                  </span>
-                  <span className="flex-grow-1 ml-2">
-                    <input
-                      onFocus={this.handleClickOpen}
-                      data-type="post"
-                      data-bs-toggle="modal"
-                      data-bs-target="#exampleModal"
-                      onClick={this.handleClickOpen}
-                      className="form-control-lg border-0"
-                      placeholder="what's on your mind?"
-                    />
-                  </span>
+                  style={{ background: "white" }}
+                >
+                  <div className="mb-3 d-flex ">
+                    <span className="align-self-center mr-2">
+                      <Avatar src={this.props.user.photoURL} />
+                    </span>
+                    <span className="flex-grow-1 ml-2">
+                      <input
+                        onFocus={this.handleClickOpen}
+                        data-type="post"
+                        data-bs-toggle="modal"
+                        data-bs-target="#exampleModal"
+                        onClick={this.handleClickOpen}
+                        className="form-control-lg border-0"
+                        placeholder="what's on your mind?"
+                      />
+                    </span>
+                  </div>
+                  <div className="post-media border-top">
+                    <div className="post-media-items d-flex justify-content-between">
+                      <Button
+                        color="secondary"
+                        data-type="video"
+                        data-bs-toggle="modal"
+                        data-bs-target="#exampleModal"
+                        onClick={this.handleClickOpen}
+                        style={{
+                          borderRadius: "10px",
+                          border: "none"
+                        }}
+                        className="rounded-pill camera mt-1 tn btn-light mt-1 flex-fill"
+                        variant="outlined"
+                        startIcon={<VideoCameraBackIcon />}
+                      >
+                        Video
+                      </Button>
+                      <Button
+                        color="secondary"
+                        data-type="photo"
+                        data-bs-toggle="modal"
+                        data-bs-target="#exampleModal"
+                        onClick={this.handleClickOpen}
+                        style={{ borderRadius: "10px", border: "none" }}
+                        className="rounded-pill photo mt-1 tn btn-light mt-1 flex-fill"
+                        variant="outlined"
+                        startIcon={<i class="fas fa-photo-video"></i>}
+                      >
+                        Photo
+                      </Button>
+                      <Button
+                        color="secondary"
+                        data-type="Feeling"
+                        data-bs-toggle="modal"
+                        data-bs-target="#exampleModal"
+                        onClick={this.handleClickOpen}
+                        style={{ border: "none" }}
+                        className="rounded-pill mood mt-1 tn btn-light mt-1 flex-fill"
+                        variant="outlined"
+                        startIcon={<MoodIcon color="danger" />}
+                      >
+                        Feeling
+                      </Button>
+                    </div>
+                  </div>
                 </div>
-                <div className="post-media border-top">
-                  <div className="post-media-items d-flex justify-content-between">
-                    <Button
-                      color="secondary"
-                      data-type="video"
-                      data-bs-toggle="modal"
-                      data-bs-target="#exampleModal"
-                      onClick={this.handleClickOpen}
-                      style={{
-                        borderRadius: "10px",
-                        border: "none"
-                      }}
-                      className="rounded-pill camera mt-1 tn btn-light mt-1 flex-fill"
-                      variant="outlined"
-                      startIcon={<VideoCameraBackIcon />}
-                    >
-                      Video
-                    </Button>
-                    <Button
-                      color="secondary"
-                      data-type="photo"
-                      data-bs-toggle="modal"
-                      data-bs-target="#exampleModal"
-                      onClick={this.handleClickOpen}
-                      style={{ borderRadius: "10px", border: "none" }}
-                      className="rounded-pill photo mt-1 tn btn-light mt-1 flex-fill"
-                      variant="outlined"
-                      startIcon={<i class="fas fa-photo-video"></i>}
-                    >
-                      Photo
-                    </Button>
-                    <Button
-                      color="secondary"
-                      data-type="Feeling"
-                      data-bs-toggle="modal"
-                      data-bs-target="#exampleModal"
-                      onClick={this.handleClickOpen}
-                      style={{ border: "none" }}
-                      className="rounded-pill mood mt-1 tn btn-light mt-1 flex-fill"
-                      variant="outlined"
-                      startIcon={<MoodIcon color="danger" />}
-                    >
-                      Feeling
-                    </Button>
+                <Posts
+                  deleteUserPost={this.deleteUserPost}
+                  user={this.props.user}
+                  commentText={this.state.userComment}
+                  commentTextChange={this.commentTextChange}
+                  comment={this.comment}
+                  like={this.like}
+                  posts={this.props.posts}
+                />
+              </div>
+              {/* maain content ends here */}
+
+              {/* right side bar */}
+
+              <div className="col-md-3">
+                <div className="position-relative">
+                  <div
+                    style={{ position: 'fixed', }}
+                    className="sidebar-main d-flex flex-column d-none d-md-block ">
+                    <div className="d-flex flex-column">
+                      <div><h2 className=" p-2 display-5">Trendings</h2></div>
+                      <div>
+                        <h2 className=" p-2 display-5">People to follow</h2>
+                      </div>
+
+                    </div>
+
                   </div>
                 </div>
               </div>
-              <Posts
-                deleteUserPost={this.deleteUserPost}
-                user={this.props.user}
-                commentText={this.state.userComment}
-                commentTextChange={this.commentTextChange}
-                comment={this.comment}
-                like={this.like}
-                posts={this.props.posts}
-              />
+              {/* right sidebar ends here */}
             </div>
-            {/* maain content ends here */}
+          </div>
 
-            {/* right side bar */}
-            <div className="col-md-3">
-              <h2 className="border p-2">Most Followed</h2>
-            </div>
-            {/* right sidebar ends here */}
+          <Dialog type={this.state.type} title="Create Post">
+            <DialogContent
+              type={this.state.type}
+              handlePostOption={this.handlePostOption}
+              change={this.handleChange}
+              post={this.post}
+              userPost={this.state.userPost}
+              selectedFile={this.state.selectedFile}
+              upload={this.state.upload}
+              user={this.props.user}
+            />
+          </Dialog>
+
+          {/* display bottom nav on phone scree */}
+          <div className="bottomNav mt-5">
+            <BottomNavbar />
           </div>
         </div>
-
-        <Dialog type={this.state.type} title="Create Post">
-          <DialogContent
-            type={this.state.type}
-            handlePostOption={this.handlePostOption}
-            change={this.handleChange}
-            post={this.post}
-            userPost={this.state.userPost}
-            selectedFile={this.state.selectedFile}
-            upload={this.state.upload}
-            user={this.props.user}
-          />
-        </Dialog>
-
-        {/* display bottom nav on phone scree */}
-        <div className="bottomNav mt-5">
-          <BottomNavbar />
-        </div>
-
         <Footer />
       </Fragment>
     );

@@ -6,7 +6,7 @@ const Comments = ({ comments, filter, commentTextChange }) => {
 
   return (
     <Fragment>
-      {comments.slice(slice.start, slice.end).map(comment => (
+      {comments && comments.slice(slice.start, slice.end).map(comment => (
         <Comment
           key={comment.uid}
           comment={comment}

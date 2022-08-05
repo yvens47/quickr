@@ -13,7 +13,7 @@ import { getAnalytics } from "firebase/analytics";
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 
 const firebaseConfig = {
-  apiKey: "",
+  apiKey: "AIzaSyCipia4o2W4orfxsoYr- 7Ig9xrtQhEsIg8",
 
   authDomain: "z-wish.firebaseapp.com",
 
@@ -23,7 +23,7 @@ const firebaseConfig = {
 
   messagingSenderId: "",
 
-  appId: "",
+  appId: "1:1012301965364:web:830b8ed900a437b6538261",
 
   measurementId: "G-289V0XLVBF"
 };

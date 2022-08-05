@@ -12,7 +12,9 @@ import { Skeleton } from "@mui/material";
 
 const Sidebar = props => {
   return (
-    <div className="sidebar-main d-flex flex-column d-none d-md-block ">
+    <div
+      style={{ position: 'fixed' }}
+      className="sidebar-main d-flex flex-column d-none d-md-block ">
       <div class="d-flex flex-column flex-shrink-0 p-2 bg-light">
         <div className="sidebar-profile  ">
           <div className="profile position-relative top-0 start-0 ">
