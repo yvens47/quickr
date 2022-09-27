@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import TimeAgo from "react-timeago";
 import UserHeaderInfo from "./user-header";
+import FavoriteIcon from "@material-ui/icons/Favorite";
 import TextField from "@material-ui/core/TextField";
+import IconButton from "@material-ui/core/IconButton";
 const Comment = ({ comment }) => {
   const [replyBoxShow, setReplyBoxShow] = useState(false);
   const [text, setText] = useState("");
@@ -13,7 +15,7 @@ const Comment = ({ comment }) => {
     }
   };
 
-  const handleCommentReply = comment => {};
+  const handleCommentReply = comment => { };
 
   return (
     <div className="d-flex mt-2">
@@ -23,17 +25,19 @@ const Comment = ({ comment }) => {
         date={comment.date}
       />
 
-      <div className="flex-grow-1 ms-3   rounded-3">
-        <div className=" bg-light p-3 rounded-3 ">{comment.text}</div>
-        <div className="comments-likes d-flex">
+      <div className="flex-grow-1 ms-3   rounded-3" >
+        <div style={{ border: "solid thin #201c3c", background: "#201c3c" }} className="  p-3 rounded-3 ">{comment.text}</div>
+        <div className="comments-likes d-flex" style={{ color: "#f3f3f3" }}>
           <span
-            className="btn-link link-dark text-decoration-none"
-            onClick={() => alert("likes comment")}
+
+
           >
-            Likes
+            <IconButton color={'primary'} onClick={() => alert("likes comment")} >
+              <FavoriteIcon />
+            </IconButton>
           </span>
           <span
-            className="btn-link ml-1 link-dark text-decoration-none"
+
             onClick={toggleReplyBox}
           >
             Reply

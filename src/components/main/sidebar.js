@@ -1,10 +1,11 @@
 import React from 'react';
 import { IconButton } from "@material-ui/core/";
 import CameraAltIcon from "@material-ui/icons/CameraAlt";
-import HomeIcon from "@material-ui/icons/Home";
+import MenuIcon from "@material-ui/icons/Menu";
 import DashboardIcon from "@material-ui/icons/Dashboard";
 import ImportContactsIcon from "@material-ui/icons/ImportContacts";
 import BookmarksIcon from "@material-ui/icons/Bookmarks";
+import AddAlertIcon from '@material-ui/icons/AddAlert';
 import Button from "@material-ui/core/Button";
 
 import { Link } from "react-router-dom";
@@ -15,9 +16,9 @@ const Sidebar = props => {
     <div
       style={{ position: 'fixed' }}
       className="sidebar-main d-flex flex-column d-none d-md-block ">
-      <div class="d-flex flex-column flex-shrink-0 p-2 bg-light">
+      <div class="d-flex flex-column flex-shrink-0 p-2 " style={{ background: "#201c3c" }}>
         <div className="sidebar-profile  ">
-          <div className="profile position-relative top-0 start-0 ">
+          {/* <div className="profile position-relative top-0 start-0 ">
             <Link
               to={{
                 pathname: `/profile/${props.display}`,
@@ -31,7 +32,7 @@ const Sidebar = props => {
                 />
               ) : (
                 <img
-                  className="border  position-absolute top-0 start-0 rounded"
+                  className="rounded  position-absolute top-0 start-0 rounded"
                   src={props.profilePic}
                   style={{ width: "100%", height: "100%", padding: "10px" }}
                 />
@@ -53,50 +54,51 @@ const Sidebar = props => {
                 </IconButton>
               </label>
             </div>
-          </div>
+          </div> */}
           <div></div>
-          <span class="fs-4">{" " + props.display}</span>
+          {/* <span class="fs-5 px-3">{" " + props.display}</span> */}
         </div>
 
-        <a
-          href="/"
-          class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none"
-        ></a>
-        <hr />
+
         <ul class="nav nav-pills flex-column mb-auto">
-          <li class="nav-item">
-            <a href="#" class="nav-link active" aria-current="page">
-              <HomeIcon className={"mr-1"} />
+
+          <li>
+            <a style={{ fontWeight: '500', fontFamily: "Inter, sans-serif;" }} href="#" class="nav-link link-light fs-5 ">
+              <MenuIcon className={"me-2 "} />
               Home
             </a>
           </li>
           <li>
-            <a href="#" class="nav-link link-dark">
-              <DashboardIcon className={"mr-1"} />
+            <a style={{ fontWeight: '500', fontFamily: "Inter, sans-serif;" }} href="#" class="nav-link link-light fs-5 ">
+              <DashboardIcon className={"me-2"} />
               Dashboard
             </a>
           </li>
           <li>
-            <a href="#" class="nav-link link-dark">
-              <ImportContactsIcon className={"mr-1"} />
-              Contacts
+            <a style={{ fontWeight: '500', fontFamily: "Inter, sans-serif;" }} href="/notifications" class="nav-link link-light fs-5 ">
+              <AddAlertIcon className={"me-2"} />
+              Alerts
             </a>
           </li>
           <li>
-            <a href="#" class="nav-link link-dark">
-              <BookmarksIcon className={"mr-1"} />
-              Bookmarks
+            <a style={{ fontWeight: '500', fontFamily: "Inter, sans-serif;" }} href="#" class="nav-link link-light fs-5 ">
+              <BookmarksIcon className={"me-2"} />
+              Settings
             </a>
           </li>
 
-          {/* <li>
-            <a href="#" class="nav-link link-dark">
-              Customers
-            </a>
-          </li> */}
+          <li>
+
+            <Button color='secondary' fullWidth className='rounded-pill mt-3' variant='contained'>
+              <BookmarksIcon className={"me-2"} /> Compose
+
+            </Button>
+          </li>
+
+
         </ul>
       </div>
-    </div>
+    </div >
   );
 };
 

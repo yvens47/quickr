@@ -272,7 +272,7 @@ export function logOut() {
  * **********************************/
 
 export function unFriend(myId, usersId = []) {
-  return async dispatch => {};
+  return async dispatch => { };
 }
 
 export function Friends(userid) {
@@ -486,23 +486,38 @@ export function deleteUserPost(postId, userId) {
     const db = getFirestore(app);
     const d = doc(db, DB_COLLECTION_POSTS, postId);
     const docRef = await getDoc(d);
+    console.log(docRef)
+    console.log("==================")
+    console.log(docRef.data())
+
 
     // delete media associtated with the post from the storage
-    const { photoName } = docRef.data();
-    const storage = getStorage();
-    // Create a reference to the file to delete
-    const desertRef = ref(storage, `media/${photoName}`);
-    // Delete the file
-    deleteObject(desertRef)
-      .then(() => {
-        // File deleted successfully
-        deleteDoc(d);
-        dispatch({ type: DELETE_USER_POST });
-        showToast("Post is deleted", "info");
-      })
-      .catch(error => {
-        showToast("unable to delete image", "error");
-      });
+    const { image, photoName, video } = docRef.data();
+    console.log(video.length)
+
+
+    if (image.length !== 0 || video.length !== 0) {
+      const storage = getStorage();
+      // Create a reference to the file to delete
+      const desertRef = ref(storage, `media/${photoName}`);
+      // Delete the file
+      deleteObject(desertRef)
+        .then(() => {
+          // File deleted successfully
+          deleteDoc(d);
+          dispatch({ type: DELETE_USER_POST });
+          showToast("Post is deleted", "info");
+        })
+        .catch(error => {
+          showToast("unable to delete image", "error");
+        });
+    } else {
+
+      deleteDoc(d);
+    }
+
+
+
   };
 }
 //not yet implemented

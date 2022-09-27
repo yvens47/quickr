@@ -31,6 +31,7 @@ import {
 
 import Sidebar from "./sidebar";
 import BottomNavbar from "./bottomNav";
+import PeopleToFollow from "./toFollow";
 
 class AppIndexPage extends Component {
   state = {
@@ -179,7 +180,7 @@ class AppIndexPage extends Component {
         <div style={{ paddingTop: ' 80px' }} className="wrapAll">
           <div className="container-fluid">
             <div className="row py-3   border-bottom justify-content-center p-2 mb-5 ">
-              <div className="col-md-2">
+              <div className="col-md-3" style={{ color: "#fefefe" }}>
                 <Sidebar
                   changeDisplay={this.handleChangeProfilePic}
                   display={this.props.user && this.props.user.displayName}
@@ -192,12 +193,12 @@ class AppIndexPage extends Component {
                 />
               </div>
               {/* Main content */}
-              <div className="col-md-7 app-contents">
+              <div className="col-md-5 app-contents">
                 <div
-                  className=" post-media-content-wrapper border   p-3 d-flex flex-column rounded
+                  className=" post-media-content-wrapper    p-3 d-flex flex-column rounded
               
               "
-                  style={{ background: "white" }}
+                  style={{ background: "#14102f" }}
                 >
                   <div className="mb-3 d-flex ">
                     <span className="align-self-center mr-2">
@@ -279,12 +280,17 @@ class AppIndexPage extends Component {
               <div className="col-md-3">
                 <div className="position-relative">
                   <div
-                    style={{ position: 'fixed', }}
+                    style={{ position: 'fixed', color: '#f3f3f3', fontWeight: '500', fontFamily: "Inter, sans-serif;" }}
                     className="sidebar-main d-flex flex-column d-none d-md-block ">
                     <div className="d-flex flex-column">
-                      <div><h2 className=" p-2 display-5">Trendings</h2></div>
+                      <div><h2 className=" p-2 fs-4">Trendings</h2></div>
                       <div>
-                        <h2 className=" p-2 display-5">People to follow</h2>
+                        <h2 className=" p-2 fs-4">People to follow</h2>
+                        <div className="p-3">
+                          <PeopleToFollow />
+                        </div>
+
+
                       </div>
 
                     </div>
@@ -314,7 +320,7 @@ class AppIndexPage extends Component {
             <BottomNavbar />
           </div>
         </div>
-        <Footer />
+        {/* <Footer /> */}
       </Fragment>
     );
   }

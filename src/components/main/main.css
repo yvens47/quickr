@@ -10,16 +10,18 @@
 }
 
 .post-media-content-wrapper input {
-  background: #f8f9fa;
+  background: rgb(32, 28, 60);
   width: 100%;
-  border: solid 1px #f8f9fa;
+  border-bottom: solid 1px #201c41;
   margin-left: 10px;
+
 }
 
 .post-media-content-wrapper input:focus {
-  background: #f8f9fa;
+  background: rgb(32, 28, 60);
+  borderColor: "#201c3c";
 
-  border: solid 1px #f8f9fa;
+
   border-color: #f8f9fa;
 }
 
@@ -81,6 +83,10 @@
   margin: 5px;
 }
 
+.comments-wrapper-button {
+  border-bottom: solid 1px #201c41
+}
+
 .post_image-drag {
   min-height: auto;
   position: relative;
@@ -114,7 +120,7 @@
 /* appindex */
 .sidebar-profile .profile {
   z-index: 1;
-  height: 190px;
+  height: 130px;
   width: 100%;
 }
 
@@ -144,9 +150,31 @@
   height: 45px;
 }
 
+.coverpage {
+  background-color: #201d3f;
+  color: #fefefe
+}
+
 .comments-likes span {
   cursor: pointer;
 }
+
+.modal-content {
+  background-color: #201d3f;
+  color: #fefefe
+}
+
+/* .modal-content form button {
+  background-color:
+    #665eb9;
+} */
+
+.modal-header {
+  background-color: rgb(27 24 56);
+  color: #fefefe;
+  border: none
+}
+
 
 /* HIDE RADIO */
 [type="radio"] {

@@ -17,61 +17,68 @@ const DialogContent = props => {
       <form onSubmit={props.post}>
         <div className="row">
           <div className="col-md-12">
-            <div className="user-header d-flex">
-              <div className="user-thumb">
-                <IconButton color="secondary">
-                  <Avatar
-                    component="span"
-                    src={props.user.photoURL}
-                    alt={props.user.displayName}
-                  />
-                </IconButton>
-              </div>
-              <div className="user-head-details d-flex flex-column">
-                <div>{props.user && props.user.displayName}</div>
-                <div>
-                  <div className="btn-group">
-                    <Link
-                      to="#"
-                      className=" btn-link link-dark text-decoration-none dropdown-toggle"
-                      data-bs-toggle="dropdown"
-                      aria-expanded="false"
-                    >
-                      Public
-                    </Link>
-                    <ul className="dropdown dropdown-menu">
-                      <li>
-                        <h6 className="dropdown-header">Actions</h6>
-                      </li>
-                      <li>
-                        <a className="dropdown-item" href="#">
-                          Friends
-                        </a>
-                      </li>
-                      <li>
-                        <a className="dropdown-item" href="#">
-                          Public
-                        </a>
-                      </li>
-                    </ul>
+            <div className="d-flex ">
+
+              {/* <div className="user-header d-flex">
+                <div className="user-thumb">
+                  <IconButton color="secondary">
+                    <Avatar
+                      component="span"
+                      src={props.user.photoURL}
+                      alt={props.user.displayName}
+                    />
+                  </IconButton>
+                </div>
+                <div className="user-head-details d-flex flex-column">
+                  <div>{props.user && props.user.displayName}</div>
+                  <div>
+                    <div className="btn-group">
+                      <Link
+                        to="#"
+                        className=" btn-link link-dark text-decoration-none dropdown-toggle"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                      >
+                        Public
+                      </Link>
+                      <ul className="dropdown dropdown-menu">
+                        <li>
+                          <h6 className="dropdown-header">Actions</h6>
+                        </li>
+                        <li>
+                          <a className="dropdown-item" href="#">
+                            Friends
+                          </a>
+                        </li>
+                        <li>
+                          <a className="dropdown-item" href="#">
+                            Public
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </div> */}
+              <input
+                style={{ background: "#201d3f", color: "#fefefe" }}
+                name="description"
+                onChange={props.change}
+                className="form-control-lg border-0 col-12"
+                placeholder="what's on your mind?"
+              />
+
+
+
             </div>
+
           </div>
         </div>
         <div className="row">
           <div className="col-md-12 d-flex flex-column">
             {/*textbox post */}
 
-            <div className="">
-              <input
-                name="description"
-                onChange={props.change}
-                className="form-control-lg border-0 col-12"
-                placeholder="what's on your mind?"
-              />
-            </div>
+
             <div
               className="post_image-drag mb-2"
               style={{

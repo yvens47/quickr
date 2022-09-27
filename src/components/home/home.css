@@ -2,17 +2,20 @@
 .nav i {
   color: #9c27b0;
 }
+
 .banner {
-  background: #efeff1;
+
   min-height: 350px;
   height: 400px;
 
   position: relative;
   overflow: hidden;
 }
+
 .banner img {
   height: 100%;
 }
+
 .col-image {
   width: 100%;
   position: relative;

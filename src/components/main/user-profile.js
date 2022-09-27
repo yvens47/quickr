@@ -110,7 +110,7 @@ const UserProfile = props => {
         loggedIn={props.loggedIn}
         logout={props.logout}
       />
-      <div className="coverpage  py-2 border-top bg-light">
+      <div className="coverpage  py-5 border-top ">
         <div className="container">
           <div className="row justify-content-center">
             <div className="col-md-8 mt-5 border-1">
@@ -145,7 +145,7 @@ const UserProfile = props => {
                                 className=""
                                 style={{
                                   width: "100%",
-                                  boxShadow: "1px 1px 10px #9d9d9d"
+
                                 }}
                                 src={props.profile && props.profile.photoURL}
                                 alt={props.user.bio}

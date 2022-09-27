@@ -3,8 +3,8 @@ import FacebookIcon from "@material-ui/icons/Facebook";
 import TwitterIcon from "@material-ui/icons/Twitter";
 const Footer = () => {
   return (
-    <div className="container-fluid">
-      <footer className="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top d-none d-md-block">
+    <div className="container">
+      <footer className="d-flex flex-wrap justify-content-between align-items-center py-3 my-4  d-none d-md-block">
         <div className="col-md-4 d-flex align-items-center">
           <a
             href="/home"

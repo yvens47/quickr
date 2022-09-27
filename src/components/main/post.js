@@ -64,10 +64,10 @@ const Post = ({
 
   return (
     <div className="py-2" key={post.postId}>
-      <div className="card rounded-0">
+      <div className="card rounded" style={{ background: "#14102f", color: "#f2f2f2" }}>
         <div className="card-body">
           <div className="post-header d-flex flex-column">
-            <div className="post-header-user-details d-flex border-bottom">
+            <div className="post-header-user-details d-flex" style={{ borderBottom: " solid thin #2c2753 " }}>
               <div>
                 <IconButton
                   onClick={() =>
@@ -157,13 +157,13 @@ const Post = ({
                   {post.photos.map(photo => (
                     <img
                       key={post.description}
-                      className="flex-sm-shrink-0 flex-md-shrink-1 p-1 m-1"
+                      className="flex-sm-shrink-0 flex-md-shrink-1 p-1 m-1 rounded"
                       src={photo}
                       alt={post.description}
                       style={{
                         width: "100%",
                         cursor: "pointer",
-                        border: "solid 1px #eee"
+
                       }}
                       onClick={handleOpenLightBox}
                     />
@@ -198,13 +198,13 @@ const Post = ({
           )}
           {post.postType === "post" && (
             <div className="post-text" style={{ position: "relative" }}>
-              <div className="post-photo d-flex" style={{}}>
+              <div className="post-photo d-flex px-2 py-2" style={{}}>
                 <p class="lead">{post.description}</p>
               </div>
             </div>
           )}
 
-          <div className="comments-wrapper-button  d-flex justify-content-between mt-2 pb-2 border-bottom">
+          <div className="comments-wrapper-button  d-flex justify-content-between mt-2 pb-2 ">
             <div class="btn    ">
               <IconButton
                 onClick={() => like(post.id)}
@@ -255,7 +255,7 @@ const Post = ({
           </div>
 
           <div
-            style={{ display: isCommentHide ? "none" : "block" }}
+            style={{ display: isCommentHide ? "none" : "block", color: "#f2f2f2" }}
             className="comments py-2"
           >
             <div className="comments-info d-flex justify-content-between">

@@ -1,0 +1,21 @@
+// Custom.scss
+// Option A: Include all of Bootstrap
+
+// .App {
+
+//     background-color: $primary;
+//     color: #F2EEEB;
+// }
+
+// Include any default variable overrides here (though functions won't be available)
+$primary: #453abe;
+$primary-2: #453abe;
+$secondary: #F2EEEB;
+
+
+
+
+
+
+//@import "../node_modules/bootstrap/scss/bootstrap";
+@import url('./node_modules/bootstrap/scss/bootstrap') // Then add additional custom code here

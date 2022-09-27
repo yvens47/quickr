@@ -1,8 +1,10 @@
 import React from "react";
 const Cols = ({ cssClasses, image, size }) => {
   return (
-    <div className={cssClasses}>
-      <div className="col-image mb-5 ">
+    <div
+      style={{ background: "#14102f", padding: "20px" }}
+      className={`${cssClasses}  me-2 rounded`}>
+      <div className="col-image mb-5  ">
         <img
           src={image}
           className="online d-block mb-3"

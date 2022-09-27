@@ -13,7 +13,7 @@ const Dialog = props => {
         <div className="modal-content">
           <div
             className="modal-header"
-            style={{ background: "#6d6170", color: "white" }}
+
           >
             <h5 className="modal-title">{props.title}</h5>
             <button
