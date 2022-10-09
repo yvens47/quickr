@@ -9,6 +9,12 @@
   border-color: #f8f9fa;
 }
 
+.post-media-items button {
+  background: #201c3c;
+  margin: 2px;
+  color: whitesmoke
+}
+
 .post-media-content-wrapper input {
   background: rgb(32, 28, 60);
   width: 100%;
@@ -49,6 +55,8 @@
 
 .my-photo {
   background: white;
+  object-fit: cover;
+ 
 }
 
 .myphoto-wrap {
@@ -146,13 +154,23 @@
 }
 
 .folow-friends {
-  background: white;
+  
   height: 45px;
 }
 
 .coverpage {
   background-color: #201d3f;
   color: #fefefe
+}
+.profile-pic-wrap {
+  background: #14102f;
+}
+.profile-pic{
+  height:300px;
+}
+.profile-pic img {
+  height: 300px;
+  object-fit: cover;
 }
 
 .comments-likes span {

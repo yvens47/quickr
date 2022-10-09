@@ -1,22 +1,22 @@
 import React, { useState, Fragment } from "react";
 
-import { styled } from "@material-ui/core/styles";
+// import { styled } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import CommentIcon from "@material-ui/icons/Comment";
 import BookmarkIcon from "@material-ui/icons/Bookmark";
 import ShareIcon from "@material-ui/icons/Share";
 import ThumbUpOutlinedIcon from "@material-ui/icons/ThumbUpOutlined";
-import VideoCameraBackIcon from "@material-ui/icons/VideoCameraBack";
-import AddAPhotoIcon from "@material-ui/icons/AddAPhoto";
-import MoodIcon from "@material-ui/icons/Mood";
-import AccessTimeIcon from "@material-ui/icons/AccessTime";
+// import VideoCameraBackIcon from "@material-ui/icons/VideoCameraBack";
+// import AddAPhotoIcon from "@material-ui/icons/AddAPhoto";
+// import MoodIcon from "@material-ui/icons/Mood";
+// import AccessTimeIcon from "@material-ui/icons/AccessTime";
 import Comments from "./comments";
 import { Avatar, Badge, TextField } from "@material-ui/core";
 // import Stack from "@material-ui/core/Stack";
 import TimeAgo from "react-timeago";
-import { Skeleton } from "@material-ui/core";
-import { Link, withRouter } from "react-router-dom";
+// import { Skeleton } from "@material-ui/core";
+import { withRouter } from "react-router-dom";
 import UserHeaderInfo from "./user-header";
 import Lightbox from "react-image-lightbox";
 import "react-image-lightbox/style.css";
@@ -96,11 +96,12 @@ const Post = ({
                 <div className="postEditActions flex-grow-1 d-flex justify-content-end align-items-center">
                   <div className="dropdown">
                     <Button
+                      style={{ background: "#14102f", borderColor:"#14102f"}}
                       type="button"
                       id="dropdownMenuButton1"
                       data-bs-toggle="dropdown"
                       ariaExpanded="false"
-                      className="btn btn-primary "
+                      
                     >
                       <MoreVertIcon />
                     </Button>

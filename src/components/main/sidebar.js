@@ -8,7 +8,7 @@ import BookmarksIcon from "@material-ui/icons/Bookmarks";
 import AddAlertIcon from '@material-ui/icons/AddAlert';
 import Button from "@material-ui/core/Button";
 
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { Skeleton } from "@mui/material";
 
 const Sidebar = props => {
@@ -63,33 +63,33 @@ const Sidebar = props => {
         <ul class="nav nav-pills flex-column mb-auto">
 
           <li>
-            <a style={{ fontWeight: '500', fontFamily: "Inter, sans-serif;" }} href="#" class="nav-link link-light fs-5 ">
-              <MenuIcon className={"me-2 "} />
+            <Link style={{ fontWeight: '500', fontFamily: "Inter, sans-serif;" }} to="/home" class="nav-link link-light fs-5 ">
+              <MenuIcon className={"me-3 "} />
               Home
-            </a>
+            </Link>
           </li>
           <li>
-            <a style={{ fontWeight: '500', fontFamily: "Inter, sans-serif;" }} href="#" class="nav-link link-light fs-5 ">
-              <DashboardIcon className={"me-2"} />
-              Dashboard
-            </a>
+            <Link style={{ fontWeight: '500', fontFamily: "Inter, sans-serif;" }} to="/profile" class="nav-link link-light fs-5 ">
+              <DashboardIcon className={"me-3"} />
+              Profile
+            </Link>
           </li>
           <li>
-            <a style={{ fontWeight: '500', fontFamily: "Inter, sans-serif;" }} href="/notifications" class="nav-link link-light fs-5 ">
-              <AddAlertIcon className={"me-2"} />
+            <Link style={{ fontWeight: '500', fontFamily: "Inter, sans-serif;" }} to="/notifications" class="nav-link link-light fs-5 ">
+              <AddAlertIcon className={"me-3"} />
               Alerts
-            </a>
+            </Link>
           </li>
           <li>
-            <a style={{ fontWeight: '500', fontFamily: "Inter, sans-serif;" }} href="#" class="nav-link link-light fs-5 ">
-              <BookmarksIcon className={"me-2"} />
+            <Link style={{ fontWeight: '500', fontFamily: "Inter, sans-serif;" }} to="#" class="nav-link link-light fs-5 ">
+              <BookmarksIcon className={"me-3"} />
               Settings
-            </a>
+            </Link>
           </li>
 
           <li>
 
-            <Button color='secondary' fullWidth className='rounded-pill mt-3' variant='contained'>
+            <Button style={{ background: '#512da8' }} fullWidth className='rounded-pill mt-3' variant='contained'>
               <BookmarksIcon className={"me-2"} /> Compose
 
             </Button>

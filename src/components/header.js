@@ -1,14 +1,16 @@
 import React from 'react'
 import { Link } from "react-router-dom";
 
-import { useEffect, useState, createRef, Fragment } from "react";
+import { useEffect, Fragment } from "react";
 
 import IconButton from "@material-ui/core/IconButton";
-import Badge from "@material-ui/core/Badge";
-import NotificationsIcon from "@material-ui/icons/Notifications";
+// import Badge from "@material-ui/core/Badge";
+// import NotificationsIcon from "@material-ui/icons/Notifications";
 import { Avatar } from "@material-ui/core";
+import icon from "../images/favicon.png"
+import { Button } from '@mui/material';
 const Header = props => {
-  const [scrolled, setScrolled] = useState(false);
+  // const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
     window.addEventListener("scroll", handleScroll, true);
 
@@ -20,12 +22,12 @@ const Header = props => {
 
   const handleScroll = e => {
 
-    setScrolled(true);
+    // setScrolled(true);
   };
 
   return (
     <nav
-      style={{ backgroundColor: "#14102f", }}
+      style={{ backgroundColor: "#14102f", color: "white" }}
       className={
 
         ` d-flex justify-content-end navbar navbar-expand-lg navbar-dark fixed-top  shadow`
@@ -39,8 +41,10 @@ const Header = props => {
           style={{ color: "rgb(225, 223, 225)" }}
         >
           Quickr
+          <img src={icon} style={{ width: "56px" }} alt='' />
         </Link>
-        <button
+       <Button
+       disableRipple={true}
           class="navbar-toggler"
           type="button"
           data-bs-toggle="collapse"
@@ -50,8 +54,89 @@ const Header = props => {
           aria-label="Toggle navigation"
         >
           <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse d-flex justify-content-end" id="navbarSupportedContent">
+        </Button>
+        <div class="navbar-collapse collapse" id="navbarSupportedContent" >
+         
+          <ul className="navbar-nav me-auto mb-2 mb-md-0">
+          
+            {props.loggedIn ? (
+              <Fragment>
+             
+                <li class="nav-item dropdown">
+                  <Link
+                    href="#"
+                    className="d-block link-dark text-decoration-none "
+                    id="dropdownUser1"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                  >
+                    <IconButton>
+                      <Avatar src={props.user.photoURL} />
+                    </IconButton>
+
+                    {/* <img
+                    src={props.user.photoURL}
+                    alt={props.user.displayName}
+                    width="32"
+                    height="32"
+                    className="rounded-circle"
+                  /> */}
+                  </Link>
+
+                  <ul
+                    className="dropdown-menu dropdown-menu-lg-end"
+                    aria-labelledby="dropdownUser1"
+                  >
+                
+                    <li>
+                      <Link className="dropdown-item" to="#">
+                        Settings
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        className="dropdown-item"
+                        to={{
+                          pathname: `/profile/${props.user.displayName}`,
+                          state: { userid: props.user.uid }
+                        }}
+                      >
+                        Profile
+                      </Link>
+                    </li>
+                    <li>
+                      <hr className="dropdown-divider" />
+                    </li>
+                    <li>
+                      <Link
+                        className="dropdown-item"
+                        to="#"
+                        onClick={props.logout}
+                      >
+                        Sign out
+                      </Link>
+                    </li>
+                  </ul>
+                </li>
+              
+              </Fragment>
+            ) : (
+             <>
+               <li class="nav-item">
+             
+                  <Link to="/login" className="nav-link px-2 ">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                  </Link>
+                </li>
+                  <li class="nav-item">
+                  <Link to="/register" className="nav-link px-2 ">
+                    <i class="fas fa-user"></i> Register
+                  </Link>
+                </li>
+                </>
+             
+            )}
+          
           <form className="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
             <input
               style={{ borderColor: "#201c3c", background: "#201c3c", boxShadow: "0 0 0 0.25rem #282249", color: "#eee" }}
@@ -61,85 +146,9 @@ const Header = props => {
               aria-label="Search"
             />
           </form>
-
-          {props.loggedIn ? (
-            <Fragment>
-              <div className="dropdown text-end">
-                <Link
-                  href="#"
-                  className="d-block link-dark text-decoration-none "
-                  id="dropdownUser1"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  <IconButton>
-                    <Avatar src={props.user.photoURL} />
-                  </IconButton>
-
-                  {/* <img
-                    src={props.user.photoURL}
-                    alt={props.user.displayName}
-                    width="32"
-                    height="32"
-                    className="rounded-circle"
-                  /> */}
-                </Link>
-
-                <ul
-                  className="dropdown-menu dropdown-menu-lg-end"
-                  aria-labelledby="dropdownUser1"
-                >
-                  {/* <li>
-                  <Link className="dropdown-item" href="#">
-                    New project...
-                  </Link>
-                </li> */}
-                  <li>
-                    <Link className="dropdown-item" to="#">
-                      Settings
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      className="dropdown-item"
-                      to={{
-                        pathname: `/profile/${props.user.displayName}`,
-                        state: { userid: props.user.uid }
-                      }}
-                    >
-                      Profile
-                    </Link>
-                  </li>
-                  <li>
-                    <hr className="dropdown-divider" />
-                  </li>
-                  <li>
-                    <Link
-                      className="dropdown-item"
-                      to="#"
-                      onClick={props.logout}
-                    >
-                      Sign out
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-            </Fragment>
-          ) : (
-            <ul className="nav  justify-content-end">
-              <li>
-                <Link to="/login" className="nav-link px-2 link-dark">
-                  <i class="fas fa-sign-in-alt"></i> Login
-                </Link>
-              </li>
-              <li>
-                <Link to="/register" className="nav-link px-2 link-dark">
-                  <i class="fas fa-user"></i> Register
-                </Link>
-              </li>
-            </ul>
-          )}
+        </ul>
         </div>
+       
       </div>
     </nav>
   );

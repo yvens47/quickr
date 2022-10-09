@@ -1,11 +1,8 @@
 import React from "react";
-import "./App.css";
 import "bootstrap/dist/css/bootstrap.css";
-
+import "./App.css";
 import IndexPage from "./components/home/IndexPage";
 import Login from "./components/login/login";
-
-
 import {
   BrowserRouter as Router,
   Route,

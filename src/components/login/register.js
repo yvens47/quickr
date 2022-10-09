@@ -81,7 +81,12 @@ const Register = props => {
   return (
     <Fragment>
       <Header loggedIn={props.loggedIn} />
-      <div className="container-fluid" style={{ minHeight: "75vh" }}>
+      <div
+      style={{minHeight:'95vh', color:"whitesmoke"}}
+       className="registerWrapper d-flex align-items-center justify-content-center">
+
+    
+      <div className="container">
         <div className="row py-5">
           <div className="container">
             <div className="row justify-content-center">
@@ -89,8 +94,9 @@ const Register = props => {
                 <h1 className="display-5">Register</h1>
                 <p className="lead">Become a member of Quickr Today</p>
                 <form
+                    style={{ background:"#14102f"}}
                   onSubmit={handleSubmit}
-                  class="mt-3 row g-3  border p-5 shadow-sm rounded"
+                  class="mt-3 row g-3  p-5 shadow-sm rounded"
                 >
                   <div className=" col-12">
                     <label for="validationCustom01" className="form-label">
@@ -184,6 +190,7 @@ const Register = props => {
             </div>
           </div>
         </div>
+      </div>
       </div>
       <Footer />
     </Fragment>

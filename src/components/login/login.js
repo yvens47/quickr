@@ -48,16 +48,19 @@ const Login = props => {
   return (
     <Fragment>
       <Header />
-      <div className="container-fluid" style={{ minHeight: "75vh" }}>
-        <div className="row py-5">
-          <div className="container">
-            <div className="row justify-content-center">
-              <div className="col-10 col-md-4 col-lg-4   gx-5 gy-5">
+      <div className="login-wrapper d-flex align-items-center justify-content-center" style={{minHeight:"95vh", color:"whitesmoke"}}>
+
+     
+      <div className="container" >
+        
+            <div className="row justify-content-center align-items-center ">
+          <div className="col-sm-10 col-md-4 col-lg-4   gx-5 gy-5">
                 <h1 className="display-4 text-center">Quickr</h1>
                 {/* <p className="lead">Login to Quickr</p> */}
                 <form
+                style={{ background:"#14102f"}}
                   onSubmit={handleLogin}
-                  class="mt-3 row g-3  border p-5 shadow-sm rounded"
+                  class="mt-3 row g-3   p-5 shadow rounded shadow"
                 >
                   <div className="col-12">
                     <label
@@ -121,9 +124,9 @@ const Login = props => {
                   </Link>
                 </p>
               </div>
-            </div>
-          </div>
+            
         </div>
+      </div>
       </div>
       <Footer />
     </Fragment>

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import TimeAgo from "react-timeago";
+// import TimeAgo from "react-timeago";
 import UserHeaderInfo from "./user-header";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import TextField from "@material-ui/core/TextField";
@@ -26,7 +26,7 @@ const Comment = ({ comment }) => {
       />
 
       <div className="flex-grow-1 ms-3   rounded-3" >
-        <div style={{ border: "solid thin #201c3c", background: "#201c3c" }} className="  p-3 rounded-3 ">{comment.text}</div>
+        <div style={{ background: "#201c3c" }} className="  p-3 rounded-3 ">{comment.text}</div>
         <div className="comments-likes d-flex" style={{ color: "#f3f3f3" }}>
           <span
 

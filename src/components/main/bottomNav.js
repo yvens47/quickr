@@ -9,16 +9,16 @@ import LocationOnIcon from "@material-ui/icons/LocationOn";
 const BottomNavbar = props => {
   //const [value, setValue] = React.useState("recents");
   return (
-    <BottomNavigation showLabels={true} component={"div"}>
+    <BottomNavigation showLabels={true} component={"div"} style={{ background: "#201c3c" }}>
       <BottomNavigationAction
         label="Nearby"
-        style={{ color: "green" }}
+        style={{ color: "white" }}
         value="nearby"
-        icon={<MoodIcon style={{ color: "green" }} />}
+        icon={<MoodIcon style={{ color: "#512da8" }} />}
       />
-      <BottomNavigationAction label="Recents" icon={<RestoreIcon />} />
-      <BottomNavigationAction label="Favorites" icon={<FavoriteIcon />} />
-      <BottomNavigationAction label="Nearby" icon={<LocationOnIcon />} />
+      <BottomNavigationAction style={{ color: "white" }} label="Recents" icon={<RestoreIcon style={{ color: "#512da8" }} />} />
+      <BottomNavigationAction style={{ color: "white" }} label="Favorites" icon={<FavoriteIcon style={{ color: "#512da8" }} />} />
+      <BottomNavigationAction style={{ color: "white" }} label="Nearby" icon={<LocationOnIcon style={{ color: "#512da8" }} />} />
     </BottomNavigation>
   );
 };

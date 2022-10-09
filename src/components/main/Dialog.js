@@ -5,12 +5,12 @@ const Dialog = props => {
       className="modal fade"
       tabindex="-1"
       id="exampleModal"
-      tabindex="-1"
+
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
     >
       <div className="modal-dialog  modal-lg modal-dialog-centered">
-        <div className="modal-content">
+        <div className="modal-content" style={{ background: "#1b1838" }}>
           <div
             className="modal-header"
 

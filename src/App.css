@@ -1,3 +1,7 @@
+html, body{
+    background-color: #201c3c;
+    min-height: 100%;
+}
 .App {
     /* background-color: #453abe; */
     background-color: #201c3c;

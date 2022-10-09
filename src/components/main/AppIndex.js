@@ -3,17 +3,17 @@ import { Redirect } from "react-router-dom";
 
 import "./main.css";
 import VideoCameraBackIcon from "@material-ui/icons/VideoCameraBack";
-import AddAPhotoIcon from "@material-ui/icons/AddAPhoto";
+// import AddAPhotoIcon from "@material-ui/icons/AddAPhoto";
 import MoodIcon from "@material-ui/icons/Mood";
 import Button from "@material-ui/core/Button";
-import AvatarGroup from "@material-ui/core/AvatarGroup";
-import { data } from "../../Data/posts";
-import Post from "./post";
+// import AvatarGroup from "@material-ui/core/AvatarGroup";
+// import { data } from "../../Data/posts";
+// import Post from "./post";
 import Posts from "./posts";
 import { Avatar } from "@material-ui/core";
 import Dialog from "./Dialog";
 import Header from "../header";
-import Footer from "../footer";
+// import Footer from "../footer";
 import DialogContent from "./dialogContent";
 import { connect } from "react-redux";
 
@@ -32,6 +32,7 @@ import {
 import Sidebar from "./sidebar";
 import BottomNavbar from "./bottomNav";
 import PeopleToFollow from "./toFollow";
+import { toast } from "react-toastify";
 
 class AppIndexPage extends Component {
   state = {
@@ -85,10 +86,8 @@ class AppIndexPage extends Component {
   handleChange = ({ currentTarget }) => {
     const postCopy = { ...this.state.userPost };
     postCopy[currentTarget.name] = currentTarget.value;
-
     this.setState({ userPost: postCopy });
     const srcs = [...this.state.upload];
-
     if (currentTarget.files !== null) {
       srcs.push(currentTarget.files);
       this.setState({ upload: srcs[0] });
@@ -142,7 +141,14 @@ class AppIndexPage extends Component {
     };
     // post
     const postCopy = { ...this.state.userPost, user: user };
-    this.props.addPost(postCopy, this.state.type, this.state.upload);
+    console.log(postCopy)
+    if(postCopy.description ==="" && postCopy.file ===null && postCopy.video ===""){
+      
+      toast.info("Please enter some text, upload an image or a video at least" )
+    }else{
+      this.props.addPost(postCopy, this.state.type, this.state.upload);
+    }
+   
     // clear post  object
   };
   handlePostOption = e => {
@@ -178,7 +184,7 @@ class AppIndexPage extends Component {
         />
 
         <div style={{ paddingTop: ' 80px' }} className="wrapAll">
-          <div className="container-fluid">
+          <div className="container">
             <div className="row py-3   border-bottom justify-content-center p-2 mb-5 ">
               <div className="col-md-3" style={{ color: "#fefefe" }}>
                 <Sidebar
@@ -193,12 +199,12 @@ class AppIndexPage extends Component {
                 />
               </div>
               {/* Main content */}
-              <div className="col-md-5 app-contents">
+              <div className="col-sm-11 col-md-6 col-12  app-contents">
                 <div
                   className=" post-media-content-wrapper    p-3 d-flex flex-column rounded
               
               "
-                  style={{ background: "#14102f" }}
+                  style={{ background: "#14102f", borderTop: "#2c2753" }}
                 >
                   <div className="mb-3 d-flex ">
                     <span className="align-self-center mr-2">
@@ -216,7 +222,7 @@ class AppIndexPage extends Component {
                       />
                     </span>
                   </div>
-                  <div className="post-media border-top">
+                  <div className="post-media py-2 " style={{ borderTop: "solid 1px rgb(44 39 83)" }}>
                     <div className="post-media-items d-flex justify-content-between">
                       <Button
                         color="secondary"

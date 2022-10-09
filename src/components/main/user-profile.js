@@ -2,7 +2,9 @@ import React, { useEffect } from "react";
 import Header from "../header";
 import { Fragment } from "react";
 import Footer from "../footer";
+import "./main.css";
 
+import Sidebar from "./sidebar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Typography from "@material-ui/core/Typography";
@@ -41,6 +43,8 @@ import { ButtonBase, Button } from "@mui/material";
 import Badge from "@material-ui/core/Badge";
 import { Avatar } from "@material-ui/core";
 import Dialog from "./Dialog";
+import { minHeight } from "@material-ui/system";
+import UserHeaderInfo from "./user-header";
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -76,7 +80,7 @@ const UserProfile = props => {
       props.getProfile(props.location.state.userid, props.match.params.user);
       props.suggestedFriends(10, props.location.state.userid);
     } else {
-      alert("hello wor;d");
+      
       <Redirect to="/home" />;
     }
 
@@ -110,14 +114,28 @@ const UserProfile = props => {
         loggedIn={props.loggedIn}
         logout={props.logout}
       />
-      <div className="coverpage  py-5 border-top ">
+      <div style={{ paddingTop: ' 80px',minHeight:"100vh" }} className="wrapAll">
+   
+      <div className="coverpage  py-3  ">
         <div className="container">
           <div className="row justify-content-center">
-            <div className="col-md-8 mt-5 border-1">
-              <div className="container">
-                <div className="row justify-content-center">
-                  <div className="col-md-6">
-                    <div className="profile-pic-wrap d-flex flex-column">
+              <div className="col-md-3" style={{ color: "#fefefe" }}>
+                <Sidebar
+                  // changeDisplay={this.handleChangeProfilePic}
+                  // display={this.props.user && this.props.user.displayName}
+                  // user={this.props.user && this.props.user}
+                  // profilePic={
+                  //   this.props.profile &&
+                  //   this.props.profile.user &&
+                  //   this.props.profile.user.photoURL
+                  // }
+                />
+              </div>
+            <div className="col-md-6 mt-2 border-1">         
+                
+                <div className="profile-pic-wrap rounded">
+              
+                    <div className=" d-flex flex-column ">
                       <div className="profile-pic  aligns-center position-relative">
                         <div className="position-relative">
                           <div className="profile position-relative top-0 start-0 ">
@@ -125,6 +143,7 @@ const UserProfile = props => {
                               {props.profile &&
                                 props.profile.uid === props.user.uid && (
                                   <IconButton
+                              style={{ color:"#512da8"}}
                                     data-bs-toggle="modal"
                                     data-bs-target="#exampleModal"
                                     color="primary"
@@ -142,7 +161,8 @@ const UserProfile = props => {
                               }}
                             >
                               <img
-                                className=""
+                              className="rounded-top"
+                                
                                 style={{
                                   width: "100%",
 
@@ -152,10 +172,12 @@ const UserProfile = props => {
                               />
                             </Link>
 
-                            <div></div>
+                            
                           </div>
-                          <div className="folow-friends border-top d-flex justify-content-center ">
-                            <div className="followers p-2 aligns-center border-end fw-bold">
+                          {/* <div className="folow-friends border-top d-flex justify-content-center ">
+                            <div 
+                            style={{color:"whitesmoke"}}
+                            className="followers p-2 aligns-center border-end fw-bold">
                               {`${props.profile &&
                                 props.profile.followers.length} followers`}
                             </div>
@@ -163,18 +185,38 @@ const UserProfile = props => {
                               {`${props.profile &&
                                 props.profile.friends.length} Friends`}
                             </div>
-                          </div>
+                          </div> */}
                         </div>
                       </div>
-                      <div className="profile-name">
-                        <p className="display-5 text-center ">
-                          {props.profile && props.profile.displayName}
-                        </p>
+                      <div className="profile-details d-flex justify-content-between p-3">
+                      <div style={{zIndex:300, position:"relative"}}>  
+                        <img
+                          style={{ position: "absolute", top: "-60px", padding: "10px", background: "whitesmoke", height: "140px", objectFit: "cover", width: "140px" }}
+                         src={props.profile.photoURL}
+                       
+                        width={'100%'} class="rounded-circle mb-5" alt="..." />
+                        <div>
+                          <p className="fs-5 text-center ">
+                            {props.profile && props.profile.displayName}
+                          </p>
+
+                        </div>
+                        
+                        </div>
+                        <div>
+                        <Button style={{ borderColor:"#211d3f", color:"whitesmoke"}} variant="outlined">Edit Profile</Button>
+                        </div>
+                    
+
                       </div>
-                      <div className="followme text-center">
+                      <div className="profile-name">
+                        
+                      </div>
+                      <div className="followme text-center" >
                         {props.profile && props.profile.uid !== props.user.uid && (
                           <IconButton
-                            color="secondary"
+                          
+                            
                             onClick={() =>
                               handleFriendsRequest(
                                 props.user.uid,
@@ -182,7 +224,7 @@ const UserProfile = props => {
                               )
                             }
                           >
-                            <PersonAddIcon />
+                          <PersonAddIcon style={{ color: "whitesmoke" }} />
                           </IconButton>
                         )}
 
@@ -191,7 +233,7 @@ const UserProfile = props => {
                         </IconButton>
                         {props.profile && props.profile.uid === props.user.uid && (
                           <IconButton
-                            color="success"
+                            
                             data-bs-toggle="offcanvas"
                             data-bs-target="#offcanvasRight"
                             aria-controls="offcanvasRight"
@@ -210,152 +252,194 @@ const UserProfile = props => {
                         )}
                         {/* <span>Follow Me</span> */}
                       </div>
-                      <div className="profile-about">
-                        <p className="lead text-center ">
+                      <div className="profile-about p-3">
+                        {/* <p className="lead  ">
                           Lorem ipsum dolor sit amet, consectetur adipiscing
                           elit. Mauris fermentum risus non odio efficitur
                           molestie.
                           <IconButton color="primary" component={"span"}>
                             <EditIcon />
                           </IconButton>
-                        </p>
+                        </p> */}
                         <p className="lead text-center "></p>
                       </div>
                     </div>
+               
+
+                    
+                      <div className="row justify-content-center ">
+                        <div className="col-md-11 mt-2 p-2">
+                          <Box sx={{ width: "100%" }} component="div">
+                            <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                              <Tabs
+                              style={{color:"whitesmoke"}}
+                                centered
+                                scrollButtons="on"
+                                value={value}
+                                onChange={handleChange}
+                                variant="scrollable"
+                                scrollButtons="auto"
+                                aria-label="scrollable auto tabs example"
+                              >
+                                <Tab
+                                style={{color:"whitesmoke"}}
+                                  icon={<PhotoCamera style={{color:"#fefefe"}} />}
+                                  label="Photos"
+                                  {...a11yProps(0)}
+                                />
+                                <Tab
+                                style={{color:"whitesmoke"}}
+                                  icon={<PeopleIcon style={{color:"#fefefe"}} />}
+                                  label="Friends"
+                                  {...a11yProps(1)}
+                                />
+
+                                <Tab
+                                style={{color:"whitesmoke"}}
+                                  icon={<SettingsIcon style={{color:"#fefefe"}} />}
+                                  label="Settings"
+                                  {...a11yProps(2)}
+                                />
+                                <Tab
+                                style={{color:"whitesmoke"}}
+                                  icon={<BookmarkIcon style={{color:"#fefefe"}} />}
+                                  label="Bookmarks"
+                                  {...a11yProps(3)}
+                                />
+                                <Tab
+                                style={{color:"whitesmoke"}} icon={<ListIcon style={{color:"#fefefe"}} />} label="Posts" {...a11yProps(4)} />
+                              </Tabs>
+                            </Box>
+                            <TabPanel value={value} index={0} componnet={"div"}>
+                              <div className="container-fluid">
+                                <div className="myphoto-wrap row d-md-flex mt-2 ">
+                                  {props.profile &&
+                                    props.profile.photos &&
+                                    props.profile.photos.length == 0 && (
+                                      <div className="addPhoto">
+                                        <div className="row py-2 justify-content-start">
+                                          <div className="col-12 col-md-12">
+                                            <h1 className="display-3">No Photos yet </h1>
+                                            <p className="lead">Please Add Photo/Album</p>
+                                            <div>
+                                              <div className="addPhotoBtn"></div>
+                                              <div className="addPhotoBtn"></div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    )}
+                                  {props.profile &&
+                                    props.profile.photos &&
+                                    props.profile.photos.map(photo => (
+                                      <div className="my-photo  flex-shrink-1  col-md-4 offset-0 p-0  ">
+                                        <img width="100%" height="100%" src={photo.url} />
+                                      </div>
+                                    ))}
+                                </div>
+                              </div>
+                            </TabPanel>
+                            <TabPanel value={value} index={1}>
+                              <div className="profile-friends">
+                                <h1 className="display-5">
+                                  {props.profile &&
+                                    props.profile.friends &&
+                                    props.profile.friends.length == 0 &&
+                                    "Suggested Friends"}
+
+                                  {props.profile &&
+                                    props.profile.friends &&
+                                    props.profile.friends.length > 0 &&
+                                    `Your Friends ${props.profile.friends.length}`}
+                                </h1>
+                                <div className="friends-list">
+                                  {props.profile &&
+                                    props.profile.friends &&
+                                    props.profile.friends.length == 0 && (
+                                      <div className="row">
+                                        <SuggestionsFriends
+                                          friends={props.suggestions && props.suggestions}
+                                          user={props.user}
+                                          friendRequests={handleFriendsRequest}
+                                        />
+                                      </div>
+                                    )}
+
+                                  <FriendLists
+                                    friends={
+                                      props.profile &&
+                                      props.profile.friends &&
+                                      props.profile.friends
+                                    }
+                                  />
+                                </div>
+                              </div>
+                            </TabPanel>
+                            <TabPanel value={value} index={2}>
+                              <div>
+                                <h1 className="display-3">Your Account Settings</h1>
+                              </div>
+                            </TabPanel>
+
+                            <TabPanel value={value} index={3}>
+                              <div>
+                                <h1 className="display-3">Your book marks</h1>
+                              </div>
+                            </TabPanel>
+                            <TabPanel value={value} index={4}>
+                              <div style={{color:"whitesmoke"}}>
+                              
+                                {
+                                  [
+                                    {
+                                      description:"Im so tired right now",
+                                      likes:"2k",
+
+
+                                    }
+                                  ].map((mypost)=>(
+                                    <div
+                                      style={{ border: ' solid thin rgb(81, 45, 168)' }}
+                                     className="mypost shadow  py-3  rounded mt-2" >
+                                      <UserHeaderInfo
+                                        image={props.profile && props.profile.photoURL}
+                                        name={props.profile && props.profile.displayName}
+
+                                        date='12/10/1989'
+                                      />
+                                      
+                                      
+                                      <p className="py-2 px-2">{mypost.description}</p>
+
+                                    </div>
+                                  ))
+                                }
+                                  
+                              
+                              </div>
+                            </TabPanel>
+                          </Box>
+                        </div>
+                     
+                   
+                
+                
                   </div>
-                </div>
-              </div>
+                  </div>
+            
+            </div>
+              <div className="col-md-3">
+                <h2>Content Here toots</h2>
+
             </div>
           </div>
         </div>
       </div>
-      <div className="container-fluid">
-        <div className="row justify-content-center">
-          <div className="col-md-8 mt-2">
-            <Box sx={{ width: "100%" }} component="div">
-              <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-                <Tabs
-                  centered
-                  scrollButtons="on"
-                  value={value}
-                  onChange={handleChange}
-                  variant="scrollable"
-                  scrollButtons="auto"
-                  aria-label="scrollable auto tabs example"
-                >
-                  <Tab
-                    icon={<PhotoCamera />}
-                    label="Photos"
-                    {...a11yProps(0)}
-                  />
-                  <Tab
-                    icon={<PeopleIcon />}
-                    label="Friends"
-                    {...a11yProps(1)}
-                  />
-
-                  <Tab
-                    icon={<SettingsIcon />}
-                    label="Settings"
-                    {...a11yProps(2)}
-                  />
-                  <Tab
-                    icon={<BookmarkIcon />}
-                    label="Bookmarks"
-                    {...a11yProps(3)}
-                  />
-                  <Tab icon={<ListIcon />} label="Posts" {...a11yProps(4)} />
-                </Tabs>
-              </Box>
-              <TabPanel value={value} index={0} componnet={"div"}>
-                <div className="container-fluid">
-                  <div className="myphoto-wrap row d-md-flex mt-2 ">
-                    {props.profile &&
-                      props.profile.photos &&
-                      props.profile.photos.length == 0 && (
-                        <div className="addPhoto">
-                          <div className="row py-2 justify-content-start">
-                            <div className="col-12 col-md-12">
-                              <h1 className="display-3">No Photos yet </h1>
-                              <p className="lead">Please Add Photo/Album</p>
-                              <div>
-                                <div className="addPhotoBtn"></div>
-                                <div className="addPhotoBtn"></div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                    {props.profile &&
-                      props.profile.photos &&
-                      props.profile.photos.map(photo => (
-                        <div className="my-photo  flex-shrink-1 border col-md-4 offset-0 p-0 ">
-                          <img width="100%" height="100%" src={photo.url} />
-                        </div>
-                      ))}
-                  </div>
-                </div>
-              </TabPanel>
-              <TabPanel value={value} index={1}>
-                <div className="profile-friends">
-                  <h1 className="display-5">
-                    {props.profile &&
-                      props.profile.friends &&
-                      props.profile.friends.length == 0 &&
-                      "Suggested Friends"}
-
-                    {props.profile &&
-                      props.profile.friends &&
-                      props.profile.friends.length > 0 &&
-                      `Your Friends ${props.profile.friends.length}`}
-                  </h1>
-                  <div className="friends-list">
-                    {props.profile &&
-                      props.profile.friends &&
-                      props.profile.friends.length == 0 && (
-                        <div className="row">
-                          <SuggestionsFriends
-                            friends={props.suggestions && props.suggestions}
-                            user={props.user}
-                            friendRequests={handleFriendsRequest}
-                          />
-                        </div>
-                      )}
-
-                    <FriendLists
-                      friends={
-                        props.profile &&
-                        props.profile.friends &&
-                        props.profile.friends
-                      }
-                    />
-                  </div>
-                </div>
-              </TabPanel>
-              <TabPanel value={value} index={2}>
-                <div>
-                  <h1 className="display-3">Your Account Settings</h1>
-                </div>
-              </TabPanel>
-
-              <TabPanel value={value} index={3}>
-                <div>
-                  <h1 className="display-3">Your book marks</h1>
-                </div>
-              </TabPanel>
-              <TabPanel value={value} index={4}>
-                <div>
-                  <h1 className="display-3">{/* for now */}</h1>
-                </div>
-              </TabPanel>
-            </Box>
-          </div>
-        </div>
-      </div>
+    
       {/* Dialog content */}
       <Dialog title="Upload/Choose photo">
         {/* photos */}
-        <div className="d-flex flex-row justify-content-between flex-wrap">
+        <div className="d-flex flex-row justify-content-start flex-wrap">
           {props.profile.photos.map(photo => (
             <div key={photo.url} className="m-1" style={{ width: "200px" }}>
               <label>
@@ -372,6 +456,7 @@ const UserProfile = props => {
           ))}
         </div>
       </Dialog>
+      </div>
 
       <Footer />
     </Fragment>

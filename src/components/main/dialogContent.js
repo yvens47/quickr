@@ -61,7 +61,15 @@ const DialogContent = props => {
                 </div>
               </div> */}
               <input
-                style={{ background: "#201d3f", color: "#fefefe" }}
+                style={{ background: "#201d3f", color: "#fefefe" ,
+                
+              borderColor:" rgb(32, 28, 60)",
+              background: "rgb(32, 28, 60)",
+              boxShadow: "rgb(40 34 73) 0px 0px 0px 0.25rem",
+              color: "rgb(238, 238, 238)",
+              outline:"none"
+
+              }}
                 name="description"
                 onChange={props.change}
                 className="form-control-lg border-0 col-12"
@@ -165,6 +173,7 @@ const DialogContent = props => {
           <div className="col-md-12">
             <div className="mt-1">
               <Button
+                style={{ background:"#291754"}}
                 onClick={props.post}
                 color="secondary"
                 fullWidth={true}
