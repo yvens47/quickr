@@ -16,7 +16,7 @@ import { Avatar, Badge, TextField } from "@material-ui/core";
 // import Stack from "@material-ui/core/Stack";
 import TimeAgo from "react-timeago";
 // import { Skeleton } from "@material-ui/core";
-import { withRouter } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import UserHeaderInfo from "./user-header";
 import Lightbox from "react-image-lightbox";
 import "react-image-lightbox/style.css";
@@ -29,13 +29,14 @@ const Post = ({
   commentText,
   history,
   user,
-  deleteUserPost
+  deleteUserPost,
+  bookmark
 }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isCommentHide, setIsCommentHide] = useState(true);
   const [lightBoxOpen, setLightBoxOpen] = useState(false);
   const [photoIndex, setPhotoIndex] = useState(0);
-  const [filter, setFilter] = useState("All");
+  // const [filter, setFilter] = useState("All");
   const handleOpenLightBox = () => {
     setLightBoxOpen(true);
   };
@@ -56,11 +57,13 @@ const Post = ({
     }
   };
 
-  const filterComments = () => {
-    // get filter action from data-id and passit to setFilter
-    alert("filter not yet implemented");
-    setFilter("Most Recent");
-  };
+  // const filterComments = () => {
+  //   // get filter action from data-id and passit to setFilter
+  //   alert("filter not yet implemented");
+  //   // setFilter("Most Recent");
+  // };
+
+  
 
   return (
     <div className="py-2" key={post.postId}>
@@ -96,23 +99,24 @@ const Post = ({
                 <div className="postEditActions flex-grow-1 d-flex justify-content-end align-items-center">
                   <div className="dropdown">
                     <Button
-                      style={{ background: "#14102f", borderColor:"#14102f"}}
+                      style={{  borderColor: "#14102f", color:'#8559da'}}
                       type="button"
                       id="dropdownMenuButton1"
                       data-bs-toggle="dropdown"
                       ariaExpanded="false"
                       
                     >
-                      <MoreVertIcon />
+                      <MoreVertIcon style={{ color: '#8559da' }} />
                     </Button>
                     <ul
+                      style={{ borderColor: "#14102f", background: "#512da8", color: 'whitesmoke' }}
                       className="dropdown-menu"
                       aria-labelledby="dropdownMenuButton1"
                     >
                       <li>
-                        <a className="dropdown-item" href="#">
+                        <Link className="dropdown-item" to="/#">
                           Edit
-                        </a>
+                        </Link>
                       </li>
                       <li>
                         <button
@@ -149,7 +153,7 @@ const Post = ({
 
           {post.postType === "photo" && (
             <Fragment>
-              <h5 className="card-title post-head lead ">{post.description}</h5>
+              <h5 className="card-title post-head lead " style={{color:"whitesmoke"}}>{post.description}</h5>
               <div
                 className="post-photo-wrapper"
                 style={{ position: "relative" }}
@@ -164,6 +168,7 @@ const Post = ({
                       style={{
                         width: "100%",
                         cursor: "pointer",
+                        objectFit:"contain"
 
                       }}
                       onClick={handleOpenLightBox}
@@ -248,6 +253,7 @@ const Post = ({
                   color="primary"
                   aria-label="upload picture"
                   component="span"
+                  onClick={()=>bookmark(post)}
                 >
                   <BookmarkIcon />
                 </IconButton>
@@ -264,35 +270,36 @@ const Post = ({
               <div>
                 {/* comments filtering */}
                 <div className="dropdown">
-                  <a
+                  <Link
                     className="btn btn-link link-dark dropdown-toggle"
-                    href="#"
+                    to="/"
+                    
                     role="button"
                     id="dropdownMenuLink"
                     data-bs-toggle="dropdown"
                     aria-expanded="false"
                   >
-                    All Comments
-                  </a>
+                    <span style={{ color: "whiteSmoke" }}>All Comments</span>
+                  </Link>
 
                   <ul
                     className="dropdown-menu dropdown-menu-light"
                     aria-labelledby="dropdownMenuLink"
                   >
                     <li>
-                      <a className="dropdown-item" href="#">
+                      <Link className="dropdown-item" to="/">
                         Top Comments
-                      </a>
+                      </Link>
                     </li>
                     <li>
-                      <a className="dropdown-item" href="#">
+                      <Link className="dropdown-item" to="#">
                         Most recent
-                      </a>
+                      </Link>
                     </li>
                     <li>
-                      <a className="dropdown-item" href="#">
+                      <Link className="dropdown-item" to="#">
                         All comments
-                      </a>
+                      </Link>
                     </li>
                   </ul>
                 </div>
@@ -308,6 +315,11 @@ const Post = ({
                 {/* comments form */}
                 <form data-id={post.id} onSubmit={comment}>
                   <TextField
+                    sx={{
+                                       background: "#201c3c",
+                                        border: "solid 1px #201c3c",
+                                        color: "whitesmoke"
+                      }}
                     onChange={commentTextChange}
                     placeholder="add your comment"
                     fullWidth={true}

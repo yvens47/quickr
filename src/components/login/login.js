@@ -58,6 +58,7 @@ const Login = props => {
                 <h1 className="display-4 text-center">Quickr</h1>
                 {/* <p className="lead">Login to Quickr</p> */}
                 <form
+                id='form_registration'
                 style={{ background:"#14102f"}}
                   onSubmit={handleLogin}
                   class="mt-3 row g-3   p-5 shadow rounded shadow"
@@ -73,7 +74,7 @@ const Login = props => {
                       name="email"
                       onChange={handleChange}
                       type="email"
-                      className="form-control"
+                      // className="form-control"
                       id="exampleFormControlInput1"
                       placeholder="name@example.com"
                     />
@@ -89,7 +90,7 @@ const Login = props => {
                       name="password"
                       onChange={handleChange}
                       type="password"
-                      className="form-control"
+                      // className="form-control"
                       id="exampleFormControlInput1"
                       placeholder="password"
                     />
@@ -97,6 +98,7 @@ const Login = props => {
                   <div class="col-12">
                     <Stack spacing={1} direction="row">
                       <Button
+                      style={{ background:"#512da8"}}
                         onClick={handleLogin}
                         variant="contained"
                         color="secondary"

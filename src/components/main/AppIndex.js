@@ -1,21 +1,29 @@
 import React, { Component, Fragment, createRef } from "react";
-import { Redirect } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 
 import "./main.css";
 import VideoCameraBackIcon from "@material-ui/icons/VideoCameraBack";
 // import AddAPhotoIcon from "@material-ui/icons/AddAPhoto";
 import MoodIcon from "@material-ui/icons/Mood";
 import Button from "@material-ui/core/Button";
+import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 // import AvatarGroup from "@material-ui/core/AvatarGroup";
 // import { data } from "../../Data/posts";
 // import Post from "./post";
 import Posts from "./posts";
-import { Avatar } from "@material-ui/core";
+
 import Dialog from "./Dialog";
 import Header from "../header";
 // import Footer from "../footer";
 import DialogContent from "./dialogContent";
 import { connect } from "react-redux";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import Avatar from '@mui/material/Avatar';
+import Stack from '@mui/material/Stack';
+import { deepOrange, deepPurple } from '@mui/material/colors'
+
 
 import {
   isLoggedIn,
@@ -26,7 +34,10 @@ import {
   deleteUserPost,
   changeProfile,
   addComment,
-  getProfile
+  getProfile,
+  mostPopular,
+  removeMostPopular,
+  bookmarkPost
 } from "../../store/actions/index";
 
 import Sidebar from "./sidebar";
@@ -60,7 +71,13 @@ class AppIndexPage extends Component {
       comments: []
     },
     upload: [],
-    selectedFile: false
+    selectedFile: false,
+    // loadmore variables
+    page :1,
+    itemsPerPage: 4
+    
+    
+   
   };
   constructor(props) {
     super(props);
@@ -68,11 +85,22 @@ class AppIndexPage extends Component {
   }
   componentDidMount = async () => {
     this.props.isLoggedIn();
+    this.props.mostPopular();
     if (this.props.loggedIn) {
       this.props.getPosts();
       this.props.getProfile(this.props.user.uid, this.props.user.displayName);
+      await this.props.mostPopular();
+      
     }
   };
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.page !== this.state.page) {
+
+      console.log("hi lall")
+      
+    }
+  }
+
   handleClickOpen = e => {
     this.setState({
       open: true,
@@ -121,11 +149,11 @@ class AppIndexPage extends Component {
     const userComment = {
       displayName: this.props.user.displayName,
       text: this.state.userComment,
-
       uid: this.props.user.uid,
       image: this.props.user.photoURL,
       reply: [],
-      likes: []
+      likes: [],
+      date:Date.now()
     };
 
     this.props.addComment(e.currentTarget.getAttribute("data-id"), userComment);
@@ -162,6 +190,27 @@ class AppIndexPage extends Component {
   deleteUserPost = (postId, userId) => {
     this.props.deleteUserPost(postId, userId);
   };
+  handleRemove = async  (popular, index)=>{     
+    await this.props.removeMostPopular(popular, index)   
+
+  }
+  bookmark = (post)=>{
+   console.log(this.props.user.id)
+  
+    this.props.bookmarkPost(post,this.props.user.uid)
+  }
+
+
+  loadMore = () =>{
+
+    alert("Loaded")
+    
+      this.setState({
+        page: this.state.page + 1,
+        itemsPerPage: this.state.itemsPerPage + 5
+      });
+    
+  }
 
   render() {
     if (!this.props.loggedIn) {
@@ -187,6 +236,7 @@ class AppIndexPage extends Component {
           <div className="container">
             <div className="row py-3   border-bottom justify-content-center p-2 mb-5 ">
               <div className="col-md-3" style={{ color: "#fefefe" }}>
+                {/* left  side content */}
                 <Sidebar
                   changeDisplay={this.handleChangeProfilePic}
                   display={this.props.user && this.props.user.displayName}
@@ -199,7 +249,7 @@ class AppIndexPage extends Component {
                 />
               </div>
               {/* Main content */}
-              <div className="col-sm-11 col-md-6 col-12  app-contents">
+              <div className="col-sm-12 col-md-6 col-12  app-contents">
                 <div
                   className=" post-media-content-wrapper    p-3 d-flex flex-column rounded
               
@@ -269,7 +319,49 @@ class AppIndexPage extends Component {
                     </div>
                   </div>
                 </div>
+                {/* userlis slides hder */}
+                <div className="feeder  p-3 rounded my-2" style={{ background:'#14102f'}}>
+                  <Slider {...{
+                    dots: true,
+                  
+                    
+                    slidesToShow: 5,
+                    }}>
+                      {
+                        [
+                        { profile:"/profile/Jean Pierre",  
+                          name: "Jean Pierre", url:"https://images.pexels.com/photos/3775168/pexels-photo-3775168.jpeg?auto=compress&cs=tinysrgb&w=800"},
+                        { profile:"/profile/@John_Kret",  name: "John", url: "https://images.pexels.com/photos/1674752/pexels-photo-1674752.jpeg?auto=compress&cs=tinysrgb&w=800" },
+                        {  profile:"/profile/Jean Pierre", name: "Trump", url: "https://images.pexels.com/photos/1484794/pexels-photo-1484794.jpeg?auto=compress&cs=tinysrgb&w=800" },
+                        {  profile:"/profile/@Jean_Pierre", name: "Aman", url: "https://images.pexels.com/photos/943084/pexels-photo-943084.jpeg?auto=compress&cs=tinysrgb&w=800" },
+                        {  profile:"/profile/@Xan_Pierre", name: "Xan", url: "https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=800" },
+                        { profile:"/profile/@Karl_Berry", 
+                           name: "Berry", url: "https://images.pexels.com/photos/943084/pexels-photo-943084.jpeg?auto=compress&cs=tinysrgb&w=800" },
+
+                        ].map((avatar)=>(
+                          <div
+                          key={avatar}
+                           className="p-2 d-flex flex-column justify-content-center align-items-center">
+                            <Link to={`${avatar.profile}`} className='d-flex flex-column align-items-center text-decoration-none'>
+                              <Avatar src={avatar.url} sx={{ bgcolor: deepPurple[500] }} sx={{ width: 56, height: 56 }}>OP</Avatar>
+                              <div style={{ color: "whitesmoke" }}>{avatar.name}</div>
+                            </Link>
+                            
+
+
+                          </div>
+
+                        ))
+                      }
+                    
+                    
+                    
+                  </Slider>
+
+
+                </div>
                 <Posts
+                  bookmark ={this.bookmark}
                   deleteUserPost={this.deleteUserPost}
                   user={this.props.user}
                   commentText={this.state.userComment}
@@ -278,6 +370,17 @@ class AppIndexPage extends Component {
                   like={this.like}
                   posts={this.props.posts}
                 />
+
+                <div className="loadmore-wrapper">
+
+                  <div className="row ">
+                    <div className="col-md-12">
+                      <Button variant="outlined" className="load" onClick={this.loadMore}>Load More</Button>
+                    </div>
+
+                  </div>
+
+                </div>
               </div>
               {/* maain content ends here */}
 
@@ -289,11 +392,41 @@ class AppIndexPage extends Component {
                     style={{ position: 'fixed', color: '#f3f3f3', fontWeight: '500', fontFamily: "Inter, sans-serif;" }}
                     className="sidebar-main d-flex flex-column d-none d-md-block ">
                     <div className="d-flex flex-column">
-                      <div><h2 className=" p-2 fs-4">Trendings</h2></div>
+                      <div className="d-flex flex-column">
+                        <h2 className=" fs-4">Trendings</h2>
+                        <div>
+                          {
+                            [{tag:"#love",count:69}].map((trend)=>(
+                              <div className="d-flex justify-content-between">
+                                <div className="p-2">
+                                  <div>{trend.tag}</div>
+                                  <div className="small" style={{ color:"rgb(105, 105, 109)"}}>{trend.count} people talking</div>
+                                </div>
+                                <div>
+                                  <TrendingDownIcon />                                  
+                                </div>
+                               
+
+                              </div>
+                            ))
+                          }
+                        </div>
+                      
+                      </div>
                       <div>
-                        <h2 className=" p-2 fs-4">People to follow</h2>
-                        <div className="p-3">
-                          <PeopleToFollow />
+                        <div className="d-flex align-items-baseline justify-content-between mt-2">
+                          <h2 className="fs-5">People to follow</h2>
+                          <Link to='/' className="btn btn-link">View more</Link>
+
+                        </div>
+                        
+                        <div className="px-1">                       
+                         
+                          {
+                            this.props.popularUserList && this.props.popularUserList.map((popular,index)=>(
+                              <PeopleToFollow remove={()=>this.handleRemove(popular, index)} key={popular} popular={popular} />
+                            ))
+                          }
                         </div>
 
 
@@ -336,7 +469,8 @@ function mapStateToProps(state) {
     loggedIn: state.user.loggedIn,
     user: state.user.user,
     posts: state.posts.posts,
-    profile: state.profile
+    profile: state.profile,
+    popularUserList: state.userActions.popularUsers
   };
 }
 export default connect(mapStateToProps, {
@@ -348,5 +482,7 @@ export default connect(mapStateToProps, {
   addComment,
   changeProfile,
   logOut,
-  getProfile
+  getProfile,
+  mostPopular,
+  removeMostPopular, bookmarkPost
 })(AppIndexPage);

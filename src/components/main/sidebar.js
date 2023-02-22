@@ -18,6 +18,7 @@ const Sidebar = props => {
       className="sidebar-main d-flex flex-column d-none d-md-block ">
       <div class="d-flex flex-column flex-shrink-0 p-2 " style={{ background: "#201c3c" }}>
         <div className="sidebar-profile  ">
+
           {/* <div className="profile position-relative top-0 start-0 ">
             <Link
               to={{
@@ -69,9 +70,9 @@ const Sidebar = props => {
             </Link>
           </li>
           <li>
-            <Link style={{ fontWeight: '500', fontFamily: "Inter, sans-serif;" }} to="/profile" class="nav-link link-light fs-5 ">
+            <Link style={{ fontWeight: '500', fontFamily: "Inter, sans-serif;" }} to={`/profile/${props.display}`} class="nav-link link-light fs-5 ">
               <DashboardIcon className={"me-3"} />
-              Profile
+              Profile            
             </Link>
           </li>
           <li>

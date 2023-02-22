@@ -1,5 +1,5 @@
 import { app } from "../../utils/firebase";
-import firebase from "firebase/app";
+// import firebase from "firebase/app";
 import { toast } from "react-toastify";
 import {
   GoogleAuthProvider,
@@ -11,26 +11,27 @@ import {
   signOut
 } from "firebase/auth";
 import {
+  
   getFirestore,
   collection,
   getDocs,
   addDoc,
   getDoc,
-  serverTimestamp,
+  // serverTimestamp,
   doc,
   setDoc,
   updateDoc,
   onSnapshot,
   query,
   orderBy,
-  FieldValue,
+  // FieldValue,
   arrayUnion,
-  arrayRemove,
+  // arrayRemove,
   Timestamp,
-  collectionGroup,
-  Query,
+  // collectionGroup,
+  // Query,
   where,
-  deleteDoc
+  deleteDoc,
 } from "firebase/firestore";
 import {
   getStorage,
@@ -42,7 +43,7 @@ import {
 import {
   GET_USER,
   IS_LOGIN,
-  IS_LOGIN_ERROR,
+  // IS_LOGIN_ERROR,
   SIGN_UP_USER,
   SIGN_UP_USER_ERROR,
   SIGN_OUT_USER,
@@ -51,14 +52,16 @@ import {
   READ_POSTS_ERROR,
   ADD_POST,
   LIKE_POST,
-  COMMENTS,
+  // COMMENTS,
   COMMENT_ON_POST,
   SUGGESTED_FRIENDS,
   SUGGESTED_FRIENDS_ERROR,
   GET_USER_PROFILE,
   GET_USER_PROFILE_ERROR,
   CHANGE_PROFILE,
-  DELETE_USER_POST
+  DELETE_USER_POST,
+  MOST_POPULAR_USER,
+  BOOKMARK
 } from "./type";
 
 import { showToast } from "../../utils/utills";
@@ -81,6 +84,7 @@ export function isLoggedIn() {
         const db = getFirestore(app);
         //const postBucket = "postImages";
         const docRef = collection(db, DB_COLLECTION_USERS);
+        
         const q = query(docRef, where("uid", "==", uid));
         const querySnapshot = await getDocs(q);
         if (querySnapshot.size > 0) {
@@ -104,7 +108,7 @@ export function loginWithGoogle() {
     signInWithPopup(auth, provider)
       .then(async result => {
         const credential = GoogleAuthProvider.credentialFromResult(result);
-        const token = credential.accessToken;
+        // const token = credential.accessToken;
         // The signed-in user info.
         const user = result.user;
         const {
@@ -114,14 +118,14 @@ export function loginWithGoogle() {
           displayName,
           isAnonymous,
           photoURL,
-          createdAt,
-          lastLoginAt
+          // createdAt,
+          // lastLoginAt
         } = user;
 
         // update the profile collection
         const db = getFirestore(app);
         //const postBucket = "postImages";
-        const storage = getStorage(app);
+        // const storage = getStorage(app);
         const docRef = collection(db, DB_COLLECTION_USERS);
         const q = query(docRef, where("uid", "==", uid));
         const querySnapshot = await getDocs(q);
@@ -150,17 +154,19 @@ export function loginWithGoogle() {
       })
       .catch(error => {
         // Handle Errors here.
+        console.log(error)
 
         dispatch({
           type: "GET_USER_ERROR",
           payload: error
         });
-        const errorCode = error.code;
-        const errorMessage = error.message;
+        // const errorCode = error.code;
+        // const errorMessage = error.message;
         // The email of the user's account used.
-        const email = error.email;
+        // const email = error.email;
         // The AuthCredential type that was used.
         const credential = GoogleAuthProvider.credentialFromError(error);
+        console.log(credential)
         // ...
       });
   };
@@ -174,7 +180,7 @@ export function login(account) {
         const user = result.user;
         const db = getFirestore(app);
         const docRef = doc(db, DB_COLLECTION_USERS, `${user.uid}`);
-        //console.log(docRef);
+       
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           dispatch({
@@ -206,14 +212,14 @@ export function signUp(account) {
           displayName,
           isAnonymous,
           photoURL,
-          createdAt,
-          lastLoginAt
+          // createdAt,
+          // lastLoginAt
         } = user;
 
         // update the profile collection
         const db = getFirestore(app);
         //const postBucket = "postImages";
-        const storage = getStorage(app);
+        // const storage = getStorage(app);
         const docRef = doc(db, DB_COLLECTION_USERS, uid);
         const userProfile = {
           uid,
@@ -267,6 +273,67 @@ export function logOut() {
   };
 }
 
+export function mostPopular () {
+  return async dispatch =>{
+
+    try {
+
+      //const db = getFirestore(app);
+     
+      // const q = query(
+      //   collection(db, DB_COLLECTION_USERS)
+      // );
+      const popularUsers = [
+        { displayName: "Jug Sam", friends: 60, handle: "@Jug" },
+        { displayName: "Hollen holerd", friends: 60, handle: "@Jholed" }
+      ];
+    
+
+      dispatch({ type: MOST_POPULAR_USER, payload: popularUsers })
+      
+    } catch (error) {
+      console.log(error)
+      
+    }
+   
+
+  }
+}
+export function getBookmarks (userid){
+  return async dispatch => {
+    const db = getFirestore(app);    
+    const docRef = doc(db, DB_COLLECTION_USERS, userid);
+    console.log(docRef)
+    const document =  await getDoc(docRef);
+    console.log(document.data())
+    
+    
+  };
+
+}
+/*
+popular:{}
+index:positions of the uses
+*/
+export function removeMostPopular (popular, index){
+
+
+
+  return async dispatch => {
+    
+    const popularUsers = [
+      {id:1, displayName: "Jug Sam", friends: 60, handle: "@Jug" },
+      {id:2, displayName: "Hollen holerd", friends: 60, handle: "@Jholed" }
+    ];   
+    
+    const removedList =popularUsers.filter((value)=> value.id !== popular.id);  
+
+    dispatch({ type: MOST_POPULAR_USER, payload: removedList })
+
+  }
+
+}
+
 /************************************
  *         Friends Actions here       *
  * **********************************/
@@ -307,7 +374,7 @@ export function suggestedFriends(limit, userid) {
 export function friendRequest(profile, currentUid) {
   return async dispatch => {
     try {
-      console.log(profile);
+      
       const { displayName, email, uid, photoURL } = profile;
       const user = { displayName, email, uid, photoURL };
       const docRef = doc(DB, DB_COLLECTION_USERS, currentUid);
@@ -342,7 +409,7 @@ export function getProfile(userid, displayName) {
       querySnapshot => {
         const data = [];
         querySnapshot.forEach(doc => {
-          console.log(doc);
+         
           data.push({
             // id: doc.id,
             ...doc.data()
@@ -365,12 +432,12 @@ export function changeProfile(user, image) {
 
     const storage = getStorage(app);
     const storageRef = ref(storage, `${DB_COLLECTION_USERS}/${image.name}`);
-    const upload = await uploadBytes(storageRef, image, image);
+     await uploadBytes(storageRef, image, image);
     const url = await getDownloadURL(ref(storage, storageRef));
     const imageData = { url: url, name: image.name };
 
     updateDoc(docRef, { photoURL: url, photos: arrayUnion(imageData) });
-    console.log(docRef);
+   
     const docData = await getDoc(docRef);
     /***********like the post */
     dispatch({ type: CHANGE_PROFILE, payload: docData.data() });
@@ -386,8 +453,15 @@ export function getPosts(start, limit) {
     const db = getFirestore(app);
     const q = query(
       collection(db, DB_COLLECTION_POSTS),
-      orderBy("date", "desc")
+      
+      orderBy("date", "desc"),
+    
+      
     );
+    
+    
+    
+    
 
     onSnapshot(
       q,
@@ -395,6 +469,7 @@ export function getPosts(start, limit) {
         const data = [];
         querySnapshot.forEach(doc => {
           // doc.data() is never undefined for query doc snapshots
+          
 
           data.push({
             id: doc.id,
@@ -423,7 +498,7 @@ export function addPost(post, postType, file) {
       for (var i = 0; i < file.length; i++) {
         const photo = file.item(i);
         const storageRef = ref(storage, `media/${photo.name}`);
-        const upload = await uploadBytes(storageRef, photo, photo);
+         await uploadBytes(storageRef, photo, photo);
         const url = await getDownloadURL(ref(storage, storageRef));
         post.photos.push(url);
         post.image = post.photos[0];
@@ -444,10 +519,11 @@ export function addPost(post, postType, file) {
         message: `Document written with ID:  ${docRef.id}`
       });
     } else if (postType === "video") {
+      // eslint-disable-next-line no-redeclare
       for (var i = 0; i < file.length; i++) {
         const photo = file.item(i);
         const storageRef = ref(storage, `media/${photo.name}`);
-        const upload = await uploadBytes(storageRef, photo, photo);
+        await uploadBytes(storageRef, photo, photo);
         const url = await getDownloadURL(ref(storage, storageRef));
         post.videos.push(url);
 
@@ -486,16 +562,9 @@ export function deleteUserPost(postId, userId) {
     const db = getFirestore(app);
     const d = doc(db, DB_COLLECTION_POSTS, postId);
     const docRef = await getDoc(d);
-    console.log(docRef)
-    console.log("==================")
-    console.log(docRef.data())
-
 
     // delete media associtated with the post from the storage
     const { image, photoName, video } = docRef.data();
-    console.log(video.length)
-
-
     if (image.length !== 0 || video.length !== 0) {
       const storage = getStorage();
       // Create a reference to the file to delete
@@ -538,6 +607,34 @@ export function likePost(id, user) {
     dispatch({ type: LIKE_POST });
   };
 }
+
+export function bookmarkPost (post,userid){
+  return async dispatch => {
+    try {
+      console.log(post)
+      const db = getFirestore(app);
+      const docRef = doc(db, DB_COLLECTION_USERS, userid);
+
+      //check if user already like the post if so dislike
+      /*********** dislike the post */
+
+      //if not likes the post
+      updateDoc(docRef, { bookmarks: arrayUnion(post) }, d => {
+        console.log("successfully updated");
+      });
+      /***********like the post */
+      console.log(docRef)
+      dispatch({ type: BOOKMARK });
+      
+    } catch (error) {
+      console.log(error)
+      
+    }
+  
+  };
+
+
+}
 /*
 add comment base on post id.
 user can only post one comment.
@@ -558,8 +655,11 @@ export function addComment(postId, comment) {
       ) {
         // flash message to User you  already posted
         showToast("🦄 you already posted a comment to this post", "error");
+       
       } else {
-        updateDoc(docRef, { comments: arrayUnion(comment) }, d => {
+        const commentCopy = { ...comment, id:  (Math.random() + 1).toString(36).substring(0,29) }
+
+        updateDoc(docRef, { comments: arrayUnion(commentCopy) }, d => {
           showToast("🦄 Your Comment was added", "success");
         });
         /***********like the post */
@@ -568,3 +668,29 @@ export function addComment(postId, comment) {
     }
   };
 }
+export function likeComment(postId, comment) {
+  return async dispatch => {
+    const db = getFirestore(app);
+    const docRef = doc(db, DB_COLLECTION_POSTS, `${postId}`); 
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      if (
+        docSnap.get("comments").filter(e => e.uid === comment.uid).length > 0
+      ) {
+        // flash message to User you  already posted
+        showToast("🦄 you already posted a comment to this post", "error");
+
+      } else {
+        const commentCopy = { ...comment, id: (Math.random() + 1).toString(36).substring(0, 29) }
+
+        updateDoc(docRef, { comments: arrayUnion(commentCopy) }, d => {
+          showToast("🦄 Your Comment was added", "success");
+        });
+        /***********like the post */
+        dispatch({ type: COMMENT_ON_POST });
+      }
+    }
+  };
+}
+

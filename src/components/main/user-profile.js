@@ -11,7 +11,7 @@ import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import { IconButton } from "@material-ui/core/";
 
-import EditIcon from "@material-ui/icons/Edit";
+// import EditIcon from "@material-ui/icons/Edit";
 import PhotoCamera from "@material-ui/icons/PhotoCamera";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
 import MailIcon from "@material-ui/icons/Mail";
@@ -21,30 +21,33 @@ import NotificationsIcon from "@material-ui/icons/Notifications";
 import SettingsIcon from "@material-ui/icons/Settings";
 import BookmarkIcon from "@material-ui/icons/Bookmark";
 import { Link, Redirect } from "react-router-dom";
-import Radio from "@material-ui/core/Radio";
+// import Radio from "@material-ui/core/Radio";
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 // data
 //import { user } from "../../Data/user.js";
 import { connect } from "react-redux";
 import {
   isLoggedIn,
-  logOut,
+  // logOut,
   getPosts,
-  addPost,
-  likePost,
-  addComment,
+  // addPost,
+  // likePost,
+  // addComment,
   suggestedFriends,
   friendRequest,
-  getProfile
+  getProfile,
+  getBookmarks
 } from "../../store/actions/index";
 import FriendLists from "./friendLists";
 import SuggestionsFriends from "./SuggestionsFriends";
-import Test from "./test";
-import { ButtonBase, Button } from "@mui/material";
+// import Test from "./test";
+import {  Button } from "@mui/material";
 import Badge from "@material-ui/core/Badge";
-import { Avatar } from "@material-ui/core";
+// import { Avatar } from "@material-ui/core";
 import Dialog from "./Dialog";
-import { minHeight } from "@material-ui/system";
+// import { minHeight } from "@material-ui/system";
 import UserHeaderInfo from "./user-header";
+import CommentIcon from '@mui/icons-material/Comment';
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -79,13 +82,14 @@ const UserProfile = props => {
     if (props.location.state && props.location.state.userid) {
       props.getProfile(props.location.state.userid, props.match.params.user);
       props.suggestedFriends(10, props.location.state.userid);
+      props.getBookmarks(props.location.state.userid)
     } else {
       
       <Redirect to="/home" />;
     }
 
     // }
-  }, []);
+  });
   const handleFriendsRequest = (currentUid, profile) => {
     props.friendRequest(profile, currentUid);
   };
@@ -123,7 +127,7 @@ const UserProfile = props => {
                 <Sidebar
                   // changeDisplay={this.handleChangeProfilePic}
                   // display={this.props.user && this.props.user.displayName}
-                  // user={this.props.user && this.props.user}
+                   display={props.user && props.user.displayName}
                   // profilePic={
                   //   this.props.profile &&
                   //   this.props.profile.user &&
@@ -204,7 +208,9 @@ const UserProfile = props => {
                         
                         </div>
                         <div>
-                        <Button style={{ borderColor:"#211d3f", color:"whitesmoke"}} variant="outlined">Edit Profile</Button>
+                        <IconButton className="me-1" style={{ borderColor: "#211d3f", color: "whitesmoke" }} variant="outlined">
+                          <FavoriteBorderIcon/></IconButton>
+                        <Button  style={{ borderColor:"#211d3f", color:"whitesmoke"}} variant="outlined">Edit Profile</Button>
                         </div>
                     
 
@@ -274,7 +280,7 @@ const UserProfile = props => {
                               <Tabs
                               style={{color:"whitesmoke"}}
                                 centered
-                                scrollButtons="on"
+                                
                                 value={value}
                                 onChange={handleChange}
                                 variant="scrollable"
@@ -303,7 +309,7 @@ const UserProfile = props => {
                                 <Tab
                                 style={{color:"whitesmoke"}}
                                   icon={<BookmarkIcon style={{color:"#fefefe"}} />}
-                                  label="Bookmarks"
+                              label={`Bookmarks`}
                                   {...a11yProps(3)}
                                 />
                                 <Tab
@@ -315,7 +321,7 @@ const UserProfile = props => {
                                 <div className="myphoto-wrap row d-md-flex mt-2 ">
                                   {props.profile &&
                                     props.profile.photos &&
-                                    props.profile.photos.length == 0 && (
+                                    props.profile.photos.length === 0 && (
                                       <div className="addPhoto">
                                         <div className="row py-2 justify-content-start">
                                           <div className="col-12 col-md-12">
@@ -333,7 +339,7 @@ const UserProfile = props => {
                                     props.profile.photos &&
                                     props.profile.photos.map(photo => (
                                       <div className="my-photo  flex-shrink-1  col-md-4 offset-0 p-0  ">
-                                        <img width="100%" height="100%" src={photo.url} />
+                                        <img width="100%" height="100%" src={photo.url} alt='profile' />
                                       </div>
                                     ))}
                                 </div>
@@ -344,7 +350,7 @@ const UserProfile = props => {
                                 <h1 className="display-5">
                                   {props.profile &&
                                     props.profile.friends &&
-                                    props.profile.friends.length == 0 &&
+                                    props.profile.friends.length === 0 &&
                                     "Suggested Friends"}
 
                                   {props.profile &&
@@ -355,7 +361,7 @@ const UserProfile = props => {
                                 <div className="friends-list">
                                   {props.profile &&
                                     props.profile.friends &&
-                                    props.profile.friends.length == 0 && (
+                                    props.profile.friends.length === 0 && (
                                       <div className="row">
                                         <SuggestionsFriends
                                           friends={props.suggestions && props.suggestions}
@@ -384,6 +390,34 @@ const UserProfile = props => {
                             <TabPanel value={value} index={3}>
                               <div>
                                 <h1 className="display-3">Your book marks</h1>
+                                {
+                                  props.bookmarks.map((book)=>
+                                    <div key={book.id} className='d-flex flex-column border mb-1'>
+                                      {console.log(book)}
+                                      <UserHeaderInfo image={book.user.image} name={book.user.name} date={book.date.toDate()}/>
+                                    <div className="  p-1" >
+                                        {book.description && <h2>{book.description}</h2>}
+                                        {book.image && 
+                                        <img
+                                        alt='book'
+                                          style={{ width: '100%', objectFit: 'cover' }}
+                                          src={book.image} />}
+                                      
+                                     
+
+                                    </div>
+                                    <div className="d-flex justify-content-end p-2">
+                                      <IconButton style={{color:"whitesmoke"}}>
+                                          <CommentIcon />
+                                      </IconButton>
+                                      
+                                      
+                                      
+                                    </div>
+
+                                  </div>)
+                                }
+                                
                               </div>
                             </TabPanel>
                             <TabPanel value={value} index={4}>
@@ -444,13 +478,13 @@ const UserProfile = props => {
             <div key={photo.url} className="m-1" style={{ width: "200px" }}>
               <label>
                 <input
-                  onChange={e => alert("JSON.stringify(currentTarget.value)")}
+                  onChange={e => console.log("change")}
                   type="radio"
                   name="test"
                   value={photo}
                   checked
                 />
-                <img src={photo.url} width="10%" />
+                <img src={photo.url} width="10%" alt='my photos' />
               </label>
             </div>
           ))}
@@ -469,7 +503,8 @@ function mapStateToProps(state) {
     user: state.user.user,
     posts: state.posts.posts,
     suggestions: state.user.suggestedFriends,
-    profile: state.profile.user
+    profile: state.profile.user,
+    bookmarks : state.profile.user.bookmarks
   };
 }
 export default connect(mapStateToProps, {
@@ -477,5 +512,6 @@ export default connect(mapStateToProps, {
   getPosts,
   suggestedFriends,
   getProfile,
-  friendRequest
+  friendRequest,
+  getBookmarks
 })(UserProfile);

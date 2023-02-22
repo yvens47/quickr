@@ -4,6 +4,10 @@
   margin-bottom: 60px;
 }
 
+.slick-slide img {
+  margin: auto;
+}
+
 .post-media-content-wrapper {
   background: #f8f9fa;
   border-color: #f8f9fa;
@@ -25,10 +29,10 @@
 
 .post-media-content-wrapper input:focus {
   background: rgb(32, 28, 60);
-  borderColor: "#201c3c";
+ 
 
 
-  border-color: #f8f9fa;
+ 
 }
 
 .camera {

@@ -7,7 +7,11 @@ import {
   SIGN_OUT_USER,
   SUGGESTED_FRIENDS,
   SUGGESTED_FRIENDS_ERROR,
-  CHANGE_PROFILE
+  CHANGE_PROFILE,
+  MOST_POPULAR_USER,
+  GET_USER_POSTS,
+  GET_USER_POSTS_ERROR,
+  BOOKMARK
 } from "../actions/type";
 // const GET_USER = "GET_USER";
 // const IS_LOGIN = "IS_LOGGED_IN";
@@ -35,8 +39,20 @@ export default function userReducer(state = {}, action) {
     case SUGGESTED_FRIENDS:
       return { ...state, suggestedFriends: action.payload };
 
+    case GET_USER_POSTS:
+      alert("dispatch")
+      return { ...state, suggestedFriends: action.payload };
+    case GET_USER_POSTS_ERROR:
+      return { ...state, suggestedFriends: action.payload , user:"posts"};
+      
+
     case SUGGESTED_FRIENDS_ERROR:
       return { ...state };
+
+    case BOOKMARK:
+      console.log(action)
+      return state;
+
 
     default:
       return state;

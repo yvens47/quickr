@@ -2,7 +2,9 @@ import React from 'react';
 import { Avatar } from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";
 import TimeAgo from "react-timeago";
+import CheckCircleOutlineTwoToneIcon from '@mui/icons-material/CheckCircleOutlineTwoTone';
 function UserHeaderInfo({ image, name, date }) {
+ 
   return (
     <div
      
@@ -13,8 +15,8 @@ function UserHeaderInfo({ image, name, date }) {
         </IconButton>
       </div>
       <div className='d-flex flex-column py-1'>
-        {name}
-        <div>{<TimeAgo date={date} />}</div>
+        {name && name}
+         { date && <div>{<TimeAgo date={date} />}</div>}
       </div>
     </div>
   );

@@ -38,14 +38,12 @@ const Register = props => {
     var accountCopy = { ...account };
     const errorCopy = { ...error };
     accountCopy[currentTarget.name] = currentTarget.value;
-    if (accountCopy.fullname === "") {
-      error.fullname = "please enter your name";
-    }
     if (accountCopy.fullname !== "") {
-      error.fullname = "";
+      error.fullname = null;
     }
-    if (accountCopy.email === "") {
-      error.email = "please enter your email";
+    
+    if (accountCopy.email !== "") {
+      error.email = null;
     }
     if (accountCopy.email !== "") {
       error.email = "";
@@ -57,25 +55,29 @@ const Register = props => {
       error.password = "Password is too short";
     }
     if (accountCopy.password !== "") {
-      error.password = "";
+      error.password = null;
     }
 
     setAccount(accountCopy);
   };
-  const handleOnFocus = ({ currentTarget }) => {
-    const accountCopy = { ...account };
-    const errorCopy = { ...error };
-    if ((currentTarget.value === "") & (currentTarget.name === "fullname")) {
-      errorCopy[currentTarget.name] = "Your name is required";
-    }
-    if ((currentTarget.value === "") & (currentTarget.name === "password")) {
-      errorCopy[currentTarget.name] = "password is required";
-    }
-    if ((currentTarget.value === "") & (currentTarget.name === "password")) {
-      errorCopy[currentTarget.name] = "password is required";
-    }
+  const handleOnBlur = ({ currentTarget }) => {
+    // const accountCopy = { ...account };
+    // const errorCopy = { ...error };
+    // if ((currentTarget.value === "") & (currentTarget.name === "fullname")) {
+    //   errorCopy[currentTarget.name] = "Your name is required";
+    // }
+    // if ((currentTarget.value === "") & (currentTarget.name === "password")) {
+    //   errorCopy[currentTarget.name] = "password is required";
+    // }
+    // if ((currentTarget.value === "") & (currentTarget.name === "password")) {
+    //   errorCopy[currentTarget.name] = "password is required";
+    // }
+    // if ((currentTarget.value === "") & (currentTarget.name === "password") && (currentTarget.value.length <8)) {
+    //   errorCopy[currentTarget.name] = "password is too short";
+    // }
+    
 
-    setError(errorCopy);
+  //  setError(errorCopy);
   };
 
   return (
@@ -93,7 +95,7 @@ const Register = props => {
               <div className="col-10 col-md-4 col-lg-4 ">
                 <h1 className="display-5">Register</h1>
                 <p className="lead">Become a member of Quickr Today</p>
-                <form
+                <form id="form_registration"
                     style={{ background:"#14102f"}}
                   onSubmit={handleSubmit}
                   class="mt-3 row g-3  p-5 shadow-sm rounded"
@@ -106,10 +108,10 @@ const Register = props => {
                       id="validationCustom01"
                       required
                       onChange={handleChange}
-                      onFocus={handleOnFocus}
+                      onBlur={handleOnBlur}
                       name="fullname"
                       type="text"
-                      className="form-control"
+                      // className="form-control"
                       placeholder="Your Full name"
                     />
                     {error.fullname && (
@@ -130,11 +132,11 @@ const Register = props => {
                       Email address
                     </label>
                     <input
-                      onFocus={handleOnFocus}
+                      onBlur={handleOnBlur}
                       onChange={handleChange}
                       type="email"
                       name="email"
-                      className="form-control"
+                      // className="form-control"
                       id="exampleFormControlInput1"
                       placeholder="name@example.com"
                     />
@@ -157,9 +159,10 @@ const Register = props => {
                     </label>
                     <input
                       onChange={handleChange}
+                        onBlur={handleOnBlur}
                       name="password"
                       type="password"
-                      className="form-control"
+                      // className="form-control"
                       id="exampleFormControlInput1"
                       placeholder="password"
                     />

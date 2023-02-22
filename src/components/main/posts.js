@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import Post from "./post";
-import { Skeleton } from "@material-ui/core";
+// import { Skeleton } from "@material-ui/core";
 import PostSkeleton from "./postSkeleton";
 const Posts = ({
   posts,
@@ -9,15 +9,17 @@ const Posts = ({
   commentTextChange,
   commentText,
   user,
-  deleteUserPost
+  deleteUserPost,
+  bookmark
 }) => {
   return (
     <Fragment>
-      {!posts && [1, 2, 3, 4, 5].map(value => <PostSkeleton />)}
+      {!posts && [1, 2, 3, 4, 5].map(value => <PostSkeleton key={value} />)}
 
       {posts &&
         posts.map(post => (
           <Post
+            bookmark={bookmark}
             deleteUserPost={deleteUserPost}
             user={user}
             commentText={commentText}

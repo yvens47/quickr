@@ -8,6 +8,7 @@ export default function postReducer(state = [], action) {
       return state;
     case "READ_POST_ERROR":
       return state;
+    
     case ADD_POST:
       return state;
     default:

@@ -22,7 +22,7 @@ function IndexPage(props) {
         <Header loggedIn={props.loggedIn} />
         <div className="container-fluid">
           <div
-            style={{ minHeight: "500px" }}
+            // style={{ minHeight: "100hvh" }}
             className="d-flex p-0 banner 
             justify-content-center p-5 align-items-center ">
 
@@ -30,10 +30,10 @@ function IndexPage(props) {
               <div className="col-md-8">
                 <h1
                   style={{ color: "rgb(66 65 82)" }}
-                  className="display-3 fw-bold "
+                  className="display-3 fw-bold  "
                 >
                   {" "}
-                  Hello world
+                  What is quickr
                 </h1>
 
                 <p className="small">
@@ -68,7 +68,7 @@ function IndexPage(props) {
 
           </div>
 
-          <div className="row p-5">
+          {/* <div className="row p-5">
             <div className="container">
               <div className="row justify-content-center">
                 <Cols
@@ -88,7 +88,7 @@ function IndexPage(props) {
                 />
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
 
         <Footer />
